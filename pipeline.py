@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from mne_bids import (BIDSPath, read_raw_bids)
 from typing import List, Optional
-from preprocessing import BaseFilter, SimpleMNEFilter
-from __future__ import annotations
+from preprocessing import BaseFilter, CleaningData, PrecomputedICA, SimpleMNEFilter
 
 import os
 import mne
@@ -45,6 +44,16 @@ class Pipeline:
 
     def compute_erp_peak(self) -> None:
         pass
+    
+def load_all_subjects(bids_path: BIDSPath):
+    # pre_ica = PrecomputedICA(bids_path)
+    # pre_ica.compute_ica()
+    
+    clean = CleaningData(bids_path)
+    clean.load_bad_data()
+    
+    return clean.bad_annotations
+    
 
 
 if __name__ == '__main__':
@@ -53,8 +62,16 @@ if __name__ == '__main__':
     bids_path = BIDSPath(subject='001', session='P3', task='P3',
                          datatype='eeg', suffix='eeg', root=bids_root)
 
-    pip = Pipeline(bids_path)
-    pip.load_data()
+    # pip = Pipeline(bids_path)
+    # pip.load_data()
 
-    sim_filter = SimpleMNEFilter(0.1, 50, 'firwin')
-    pip.apply_filter(sim_filter)
+    # sim_filter = SimpleMNEFilter(0.1, 50, 'firwin')
+    # pip.apply_filter(sim_filter)
+    
+    # pre_ica = PrecomputedICA(bids_path)
+    # pre_ica.compute_ica()
+    bids_paths = [ bids_path.copy().update(subject=str(x).zfill(3)) for x in range(1, 41)]
+    # load_all_subjects(bids_paths[0])
+    a = map(load_all_subjects, bids_paths)
+    print(list(a))
+    

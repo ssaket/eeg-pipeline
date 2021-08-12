@@ -1,0 +1,2 @@
+@dataclass
+class Multi
