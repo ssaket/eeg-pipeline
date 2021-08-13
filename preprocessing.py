@@ -4,10 +4,12 @@ import numpy as np
 from ccs_eeg_semesterproject import sp_read_ica_eeglab
 from dataclasses import dataclass, field
 from genericpath import isfile
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 import mne
 import os
+import logging
+import pandas as pd
 
 from mne_bids.path import BIDSPath
 
@@ -22,33 +24,33 @@ class BaseFilter(ABC):
 @dataclass
 class SimpleMNEFilter(BaseFilter):
     """ Simple filter based on MNE. """
-    h_freq: int
     l_freq: int
+    h_freq: int
     name: str
 
     def apply_filter(self, raw: mne.io.Raw):
-        raw.filter(self.l_freq, self.h_freq, fir_design=self.name)
+        return raw.filter(l_freq=self.l_freq, h_freq=self.h_freq, fir_design=self.name)
 
 
 @dataclass
 class BaseICA(ABC):
     @abstractmethod
-    def compute_ica():
+    def compute_ica(self, raw: mne.io.Raw):
         pass
 
     @abstractmethod
-    def apply_ica():
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
         pass
 
 
 @dataclass
 class SimpleMNEICA(BaseICA):
-    """ Simple ICA based on MNE"""
+    """ Simple ICA based on MNE """
     method: str
     n_components: Optional[int] = None
     random_state: int = 23
-    ica: mne.preprocessing.ica = field(init=False)
     exclude: list[int] = field(default_factory=list)
+    ica: mne.preprocessing.ica = field(init=False)
 
     def compute_ica(self, raw: mne.io.Raw):
         self.ica = mne.preprocessing.ICA(
@@ -61,6 +63,49 @@ class SimpleMNEICA(BaseICA):
             return self.ica.apply(raw.copy())
         else:
             return self.ica.apply(raw)
+
+
+@dataclass
+class ERPPeak():
+    tmin: int
+    tmax: int
+    baseline: Optional[Tuple[Optional[int], int]] = None
+    reject_by_annotation: bool = False
+    epochs: mne.Epochs = field(init=False, repr=False, default=np.ndarray(0))
+
+    def compute_epochs(self, raw: mne.io.Raw, events: np.ndarray, events_id: Dict) -> None:
+        """There is a bug in MNE, even if we pass the default baseline (None, 0), we get slightly different results."""
+        if self.baseline:
+            self.epochs = mne.Epochs(raw, events=events, event_id=events_id,
+                                     tmin=self.tmin, tmax=self.tmax, baseline=self.baseline, reject_by_annotation=self.reject_by_annotation)
+        else:
+            self.epochs = mne.Epochs(raw, events=events, event_id=events_id,
+                                     tmin=self.tmin, tmax=self.tmax, reject_by_annotation=self.reject_by_annotation)
+
+    def compute_peak(self, stim: str = None) -> pd.DataFrame:
+
+        assert type(self.epochs) != np.ndarray, "Run compute_epochs first!"
+        peak_values = {'channel': [], 'value': [], 'latency': [], 'trial': []}
+        _epochs: mne.Epochs = self.epochs.copy()[stim] if stim else self.epochs
+
+        for ix, trial in enumerate(_epochs.iter_evoked()):
+            offset = 0.03
+            channel, latency, value = trial.get_peak(ch_type='eeg', tmin=self.tmin + offset, tmax=self.tmax - offset,
+                                                     return_amplitude=True)
+            latency = int(round(latency * 1e3))  # convert to milliseconds
+            value = int(round(value * 1e6))      # convert to µV
+            peak_values['channel'].append(channel.strip())
+            peak_values['value'].append(value)
+            peak_values['latency'].append(latency)
+            peak_values['trial'].append(ix)
+
+            logging.info('Trial {}: peak of {} µV at {} ms in channel {}'
+                         .format(ix, value, latency, channel))
+        df = pd.DataFrame.from_dict(peak_values)
+        del peak_values
+        return df
+
+    pass
 
 
 """
@@ -91,7 +136,7 @@ class CleaningData():
         ch_fname = self._get_fpath('channels')
         bad_channels = np.loadtxt(ch_fname, delimiter='\t', dtype='int')
         bad_channels -= 1  # handle 0 indexing
-        return bad_channels
+        return bad_channels.reshape(-1)
 
     def _get_bad_segments(self) -> mne.Annotations:
         import pandas as pd
@@ -103,12 +148,12 @@ class CleaningData():
         self.bad_annotations = self._get_bad_segments()
         self.bad_channels = self._get_bad_channels()
 
-    def apply_cleaning(self, raw: mne.io.Raw, interpolate: bool = False):
-        raw.annotations = self.bad_annotations
-        raw.info['bads'] = self.bad_channels
-
+    def apply_cleaning(self, raw: mne.io.Raw, interpolate: bool = True):
+        self.load_bad_data()
+        raw.info['bads'] = [raw.ch_names[idx] for idx in self.bad_channels]
         if interpolate:
             raw.interpolate_bads()
+        raw.set_annotations(raw.annotations + self.bad_annotations)
 
 
 @dataclass
@@ -134,7 +179,7 @@ class PrecomputedICA(BaseICA):
         assert isfile(ica_fname), "ICA file not found!"
         return sp_read_ica_eeglab(ica_fname)
 
-    def compute_ica(self):
+    def compute_ica(self, raw: mne.io.Raw = None):
         bids_path = self.bids_path
         ica_file = os.path.join(bids_path.directory, bids_path.basename.removesuffix(
             bids_path.suffix) + self.ica_ext)
@@ -146,6 +191,6 @@ class PrecomputedICA(BaseICA):
     def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
         self.ica.exclude = self.exclude
         if make_copy:
-            return self.ica.apply(raw.copy())
+            self.ica.apply(raw.copy())
         else:
-            return self.ica.apply(raw)
+            self.ica.apply(raw)
