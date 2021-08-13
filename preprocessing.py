@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
+from numpy.core.fromnumeric import argmax
 from ccs_eeg_semesterproject import sp_read_ica_eeglab
 from dataclasses import dataclass, field
 from genericpath import isfile
@@ -24,8 +25,8 @@ class BaseFilter(ABC):
 @dataclass
 class SimpleMNEFilter(BaseFilter):
     """ Simple filter based on MNE. """
-    l_freq: int
-    h_freq: int
+    l_freq: float
+    h_freq: float
     name: str
 
     def apply_filter(self, raw: mne.io.Raw):
@@ -63,49 +64,6 @@ class SimpleMNEICA(BaseICA):
             return self.ica.apply(raw.copy())
         else:
             return self.ica.apply(raw)
-
-
-@dataclass
-class ERPPeak():
-    tmin: int
-    tmax: int
-    baseline: Optional[Tuple[Optional[int], int]] = None
-    reject_by_annotation: bool = False
-    epochs: mne.Epochs = field(init=False, repr=False, default=np.ndarray(0))
-
-    def compute_epochs(self, raw: mne.io.Raw, events: np.ndarray, events_id: Dict) -> None:
-        """There is a bug in MNE, even if we pass the default baseline (None, 0), we get slightly different results."""
-        if self.baseline:
-            self.epochs = mne.Epochs(raw, events=events, event_id=events_id,
-                                     tmin=self.tmin, tmax=self.tmax, baseline=self.baseline, reject_by_annotation=self.reject_by_annotation)
-        else:
-            self.epochs = mne.Epochs(raw, events=events, event_id=events_id,
-                                     tmin=self.tmin, tmax=self.tmax, reject_by_annotation=self.reject_by_annotation)
-
-    def compute_peak(self, stim: str = None) -> pd.DataFrame:
-
-        assert type(self.epochs) != np.ndarray, "Run compute_epochs first!"
-        peak_values = {'channel': [], 'value': [], 'latency': [], 'trial': []}
-        _epochs: mne.Epochs = self.epochs.copy()[stim] if stim else self.epochs
-
-        for ix, trial in enumerate(_epochs.iter_evoked()):
-            offset = 0.03
-            channel, latency, value = trial.get_peak(ch_type='eeg', tmin=self.tmin + offset, tmax=self.tmax - offset,
-                                                     return_amplitude=True)
-            latency = int(round(latency * 1e3))  # convert to milliseconds
-            value = int(round(value * 1e6))      # convert to µV
-            peak_values['channel'].append(channel.strip())
-            peak_values['value'].append(value)
-            peak_values['latency'].append(latency)
-            peak_values['trial'].append(ix)
-
-            logging.info('Trial {}: peak of {} µV at {} ms in channel {}'
-                         .format(ix, value, latency, channel))
-        df = pd.DataFrame.from_dict(peak_values)
-        del peak_values
-        return df
-
-    pass
 
 
 """

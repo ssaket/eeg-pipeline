@@ -1,3 +1,4 @@
+from erpanalysis import ERPAnalysis
 from warnings import simplefilter
 import pandas as pd
 from dataclasses import dataclass
@@ -43,9 +44,9 @@ class Pipeline:
         logging.info("Applying resampling")
         self.raw.resample(sampling_freq, npad=padding)
 
-    def apply_rereferencing(self, reference_channels: List[str]) -> None:
+    def apply_rereferencing(self, reference_channels: Union[List[str], str]) -> None:
         logging.info("Applying re-referencing")
-        self.raw.set_eeg_reference()
+        mne.io.set_eeg_reference(self.raw, ref_channels=reference_channels)
 
     def apply_cleaning(self, cleaner: CleaningData):
         logging.info("Applying cleaning")
@@ -67,9 +68,9 @@ class Pipeline:
         assert isfile(fname), "Events file not found!"
         return pd.read_csv(fname, delimiter='\t')
 
-    def compute_erp_peak(self, erp: ERPPeak, condition: str) -> pd.DataFrame:
+    def compute_erp_peak(self, erp: ERPAnalysis, condition: str, thypo: float, offset: float = 0.05, channels: list[str] = []) -> pd.DataFrame:
         erp.compute_epochs(self.raw, self.events, self.event_ids)
-        return erp.compute_peak(condition)
+        return erp.compute_peak(condition, thypo, offset, channels)
 
     def start_preprocessing(self):
         logging.info(
@@ -79,7 +80,7 @@ class Pipeline:
         self.apply_cleaning(CleaningData(self.bids_path))
         self.apply_filter(SimpleMNEFilter(0.1, 50, 'firwin'))
         self.apply_ica(PrecomputedICA(self.bids_path))
-        self.compute_erp_peak(ERPPeak(-0.2, 0.8, (-0.2, 0)))
+        self.compute_erp_peak(ERPAnalysis(-0.1, 1), 'stimulus', 0.3, 0.1, ['Cz'])
         logging.info("Processed subject {}\n".format(self.bids_path.subject))
 
 
@@ -104,7 +105,7 @@ def load_all_subjects(bids_path: BIDSPath):
 if __name__ == '__main__':
 
     bids_root = os.path.join('data', 'P3')
-    bids_path = BIDSPath(subject='001', session='P3', task='P3',
+    bids_path = BIDSPath(subject='030', session='P3', task='P3',
                          datatype='eeg', suffix='eeg', root=bids_root)
 
     # pip = Pipeline(bids_path)
