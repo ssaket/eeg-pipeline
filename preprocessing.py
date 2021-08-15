@@ -20,6 +20,9 @@ class BaseFilter(ABC):
     @abstractmethod
     def apply_filter():
         pass
+    @staticmethod
+    def step():
+        return "filtering"
 
 
 @dataclass
@@ -38,10 +41,12 @@ class BaseICA(ABC):
     @abstractmethod
     def compute_ica(self, raw: mne.io.Raw):
         pass
-
     @abstractmethod
     def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
         pass
+    @staticmethod
+    def step():
+        return "ica"
 
 
 @dataclass
@@ -76,9 +81,13 @@ class CleaningData():
     """Load precomputed bad channels and segments provided by the CCS-Department"""
     bids_path: BIDSPath
     bad_channels: list[int] = field(default_factory=list)
-    bad_annotations: list = field(default_factory=list)
+    bad_annotations: list = field(default_factory=list, repr=False)
     channels_ext: str = 'badChannels.tsv'
     segments_ext: str = 'badSegments.csv'
+    
+    @staticmethod
+    def step():
+        return "cleaning"
 
     def _get_fpath(self, dtype: str):
         assert dtype in [

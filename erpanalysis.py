@@ -15,6 +15,10 @@ class ERPAnalysis():
     reject_by_annotation: bool = False
     epochs: mne.Epochs = field(init=False, repr=False, default=np.ndarray(0))
 
+    @staticmethod
+    def step():
+        return "erp"
+
     def compute_epochs(self, raw: mne.io.Raw, events: np.ndarray, events_id: Dict) -> None:
         """There is a bug in MNE, even if we pass the default baseline (None, 0), we get slightly different results."""
         if self.baseline:

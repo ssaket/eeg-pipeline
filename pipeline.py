@@ -10,10 +10,22 @@ from preprocessing import *
 import os
 import mne
 import logging
+import warnings
 
-logging.basicConfig(level=logging.INFO)
-mne.set_log_level(verbose='ERROR')
-simplefilter(action='ignore', category=FutureWarning)
+
+def P3_EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
+    blocks = np.array([list(range(10*x + 1, 10*x + 6)) for x in range(1, 6)])
+    rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))]).tolist()
+    freq = np.setdiff1d(blocks.flatten(), rare).tolist()
+
+    stimlus = ['A', 'B', 'C', 'D', 'E']
+
+    evts_stim = ['stimulus/' + stimlus[i] + '/' +
+                 str(alph) for i, x in enumerate(blocks) for alph in x]
+    evts_id = dict((i+3, evts_stim[i]) for i in range(0, len(evts_stim)))
+    evts_id[1] = 'response/201'
+    evts_id[2] = 'response/202'
+    return evts_id, rare, freq
 
 
 @dataclass
@@ -21,9 +33,15 @@ class Pipeline:
     """ Pipeline for processing Encoding and Decoding Analysis on EEG data"""
     bids_path: Union[str, list[str]]
     subject: Optional[int] = None
+    verbose: logging = logging.INFO
     raw: mne.io.Raw = field(init=False, repr=False)
     events: np.ndarray = field(init=False, repr=False)
     event_ids: dict = field(init=False, repr=False)
+
+    def __post_init__(self):
+        logging.basicConfig(level=self.verbose)
+        mne.set_log_level(verbose='ERROR')
+        warnings.filterwarnings("ignore")
 
     def set_montage(self) -> None:
         montage_dir = os.path.join(os.path.dirname(mne.__file__),
@@ -34,11 +52,22 @@ class Pipeline:
         logging.info("Setting montage")
         self.raw.set_montage(ten_twenty_montage, match_case=False)
 
-    def load_data(self) -> None:
+    def load_data(self, event_id: Union[Dict, str] = "auto") -> None:
         logging.info("Loading Data")
         raw = read_raw_bids(bids_path=self.bids_path)
-        self.events, self.event_ids = mne.events_from_annotations(raw)
+        self.events, self.event_ids = mne.events_from_annotations(
+            raw, event_id=event_id)
         self.raw = raw.load_data()
+
+    def set_custom_events_mapping(self, mapping: Dict[int, str] = None, task: str = None) -> None:
+        if task == 'P3':
+            mapping, _, _ = P3_EVENTS_MAPINGS()
+        assert mapping is not None, "Mapping is not defined! Please pass mapping as argument"
+
+        annot_from_events = mne.annotations_from_events(
+            events=self.events, event_desc=mapping, sfreq=self.raw.info['sfreq'])
+        self.raw.set_annotations(annot_from_events)
+        self.events, self.event_ids = mne.events_from_annotations(self.raw)
 
     def apply_resampling(self, sampling_freq: int, padding: str = 'auto') -> None:
         logging.info("Applying resampling")
@@ -68,19 +97,30 @@ class Pipeline:
         assert isfile(fname), "Events file not found!"
         return pd.read_csv(fname, delimiter='\t')
 
+    def compute_epochs(self, erp: ERPAnalysis) -> mne.Epochs:
+        return erp.compute_epochs(self.raw, self.events, self.event_ids)
+
     def compute_erp_peak(self, erp: ERPAnalysis, condition: str, thypo: float, offset: float = 0.05, channels: list[str] = []) -> pd.DataFrame:
-        erp.compute_epochs(self.raw, self.events, self.event_ids)
+        self.compute_epochs(erp)
         return erp.compute_peak(condition, thypo, offset, channels)
 
-    def start_preprocessing(self):
+    def apply(self, step):
+        if step.step() == 'cleaning':
+            self.apply_cleaning(step)
+        elif step.step() == 'filtering':
+            self.apply_filter(step)
+        elif step.step() == 'ica':
+            self.apply_ica(step)
+        elif step.step() == 'erp':
+            self.compute_epochs(step)
+        else:
+            logging.error("Invalid pipeline operation!")
+
+    def make_pipeline(self, steps: list):
         logging.info(
             "*"*5 + "Proceesing for subject: {}". format(self.bids_path.subject) + "*"*5)
-        self.load_data()
-        self.set_montage()
-        self.apply_cleaning(CleaningData(self.bids_path))
-        self.apply_filter(SimpleMNEFilter(0.1, 50, 'firwin'))
-        self.apply_ica(PrecomputedICA(self.bids_path))
-        self.compute_erp_peak(ERPAnalysis(-0.1, 1), 'stimulus', 0.3, 0.1, ['Cz'])
+        for step in steps:
+            self.apply(step)
         logging.info("Processed subject {}\n".format(self.bids_path.subject))
 
 
