@@ -1,20 +1,14 @@
 from dataclasses import dataclass, field
 import logging
+import pipeline
 
-from pipeline import P3_EVENTS_MAPINGS
-from mne.decoding import Vectorizer
-
-import sklearn
-from sklearn import svm
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import make_pipeline
-from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import classification_report, accuracy_score, precision_recall_fscore_support
+from sklearn.pipeline import Pipeline
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 import seaborn as sns
 import numpy as np
 import mne
@@ -49,7 +43,7 @@ class LDADecoder(Classifier):
 
 @dataclass
 class CVPipleline(Classifier):
-    cv_pip: sklearn.pipeline.Pipeline
+    cv_pip: Pipeline
     train_data: np.ndarray
     test_data: np.ndarray
     train_labels: np.ndarray
@@ -79,7 +73,7 @@ class CVPipleline(Classifier):
 
 @dataclass
 class OvertimePipelineDecoder(Classifier):
-    pipeline: sklearn.pipeline.Pipeline
+    pipeline: Pipeline
     X: np.ndarray = field(init=False, repr=False)
     y: np.ndarray = field(init=False, repr=False)
     epochs: mne.Epochs = field(init=False, repr=False)
@@ -140,9 +134,18 @@ class MNECSPTransformer(FeatureTransformer):
 
 
 @dataclass
-class Decoding():
-    epochs: mne.Epochs
-    score: np.ndarray = field(init=False)
+class EEGDecoder():
+    condition: str
+    epoch_times: Tuple[float, float]
+    decoding_times: Tuple[float, float]
+    raw: mne.io.Raw = field(repr=False)
+    epochs: mne.Epochs = field(init=False, repr=False)
+    score: np.ndarray = field(init=False, repr=False)
+
+    def __post_init__(self):
+        events, ids = mne.events_from_annotations(self.raw)
+        epochs = mne.Epochs(self.raw, events, ids, self.epoch_times[0], self.epoch_times[1], None, reject_by_annotation=False)
+        self.epochs = epochs[self.condition].load_data().crop(self.decoding_times[0], self.decoding_times[1]).copy()
 
     def get_train(
             self,
@@ -208,7 +211,7 @@ class Decoding():
                          n_classes: int = 2) -> np.ndarray:
         _epochs = epochs if epochs else self.epochs
         _labels = epochs.events[:, -1] if epochs else self.epochs.events[:, -1]
-        _, rare, _ = P3_EVENTS_MAPINGS()
+        _, rare, _ = pipeline.P3.EVENTS_MAPINGS()
         wanted_keys = [
             _epochs.event_id[key]
             for key in _epochs.event_id

@@ -1,5 +1,3 @@
-from erpanalysis import ERPAnalysis
-
 from tqdm import tqdm
 from multiprocessing import Pool
 from dataclasses import dataclass
@@ -14,24 +12,25 @@ import logging
 import warnings
 import pandas as pd
 
+class P3:
+    @abstractmethod
+    def EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
+        blocks = np.array(
+            [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
+        rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))]).tolist()
+        freq = np.setdiff1d(blocks.flatten(), rare).tolist()
 
-def P3_EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
-    blocks = np.array(
-        [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
-    rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))]).tolist()
-    freq = np.setdiff1d(blocks.flatten(), rare).tolist()
+        stimlus = ['A', 'B', 'C', 'D', 'E']
 
-    stimlus = ['A', 'B', 'C', 'D', 'E']
-
-    evts_stim = [
-        'stimulus/' + stimlus[i] + '/' + str(alph)
-        for i, x in enumerate(blocks)
-        for alph in x
-    ]
-    evts_id = dict((i + 3, evts_stim[i]) for i in range(0, len(evts_stim)))
-    evts_id[1] = 'response/201'
-    evts_id[2] = 'response/202'
-    return evts_id, rare, freq
+        evts_stim = [
+            'stimulus/' + stimlus[i] + '/' + str(alph)
+            for i, x in enumerate(blocks)
+            for alph in x
+        ]
+        evts_id = dict((i + 3, evts_stim[i]) for i in range(0, len(evts_stim)))
+        evts_id[1] = 'response/201'
+        evts_id[2] = 'response/202'
+        return evts_id, rare, freq
 
 
 @dataclass
@@ -39,6 +38,7 @@ class Pipeline:
     """ Pipeline for processing Encoding and Decoding Analysis on EEG data"""
     bids_path: Union[str, list[str]]
     subject: Optional[int] = None
+    events_mapping: P3 =  P3.EVENTS_MAPINGS()
     verbose: logging = logging.INFO
     raw: mne.io.Raw = field(init=False, repr=False)
     events: np.ndarray = field(init=False, repr=False)
@@ -68,7 +68,7 @@ class Pipeline:
                                   mapping: Dict[int, str] = None,
                                   task: str = None) -> None:
         if task == 'P3':
-            mapping, _, _ = P3_EVENTS_MAPINGS()
+            mapping, _, _ = P3.EVENTS_MAPINGS()
         assert mapping is not None, "Mapping is not defined! Please pass mapping as argument"
 
         annot_from_events = mne.annotations_from_events(
@@ -110,17 +110,22 @@ class Pipeline:
         assert isfile(fname), "Events file not found!"
         return pd.read_csv(fname, delimiter='\t')
 
-    def compute_epochs(self, erp: ERPAnalysis) -> mne.Epochs:
+    def compute_epochs(self, erp: any) -> mne.Epochs:
+        self.erps = erp
         return erp.compute_epochs(self.raw, self.events, self.event_ids)
 
     def compute_erp_peak(self,
-                         erp: ERPAnalysis,
+                         erp: any,
                          condition: str,
                          thypo: float,
                          offset: float = 0.05,
                          channels: list[str] = []) -> pd.DataFrame:
         self.compute_epochs(erp)
         return erp.compute_peak(condition, thypo, offset, channels)
+
+    def apply_decoder(self, decoder: any) -> None:
+        # epoch_train = erp.epochs['stimulus'].load_data().crop(0.1, 0.9).copy()
+        pass
 
     def _parallel_process_raws(self, pipeline) -> mne.io.Raw:
         pipeline.load_data()
@@ -160,14 +165,19 @@ class Pipeline:
         self.set_montage()
 
     def apply(self, step: list) -> None:
-        if step.step() == 'cleaning':
+        step_name = step[0] if type(step) == 'tuple' else step.step()
+        if step_name == 'cleaning':
             self.apply_cleaning(step)
-        elif step.step() == 'filtering':
+        elif step_name == 'filtering':
             self.apply_filter(step)
-        elif step.step() == 'ica':
+        elif step_name == 'ica':
             self.apply_ica(step)
-        elif step.step() == 'erp':
+        elif step_name == 'erp':
             self.compute_epochs(step)
+        elif step_name == 'feature_transform':
+            self.apply_decoder(step)
+        elif step_name == 'classifier':
+            self.apply_classifier(step)
         else:
             logging.error("Invalid pipeline operation!")
 
