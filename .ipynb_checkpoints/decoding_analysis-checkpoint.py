@@ -51,8 +51,8 @@ class LDADecoder(Classifier):
 class CVPipleline(Classifier):
     cv_pip: sklearn.pipeline.Pipeline
     train_data: np.ndarray
-    test_data: np.ndarray
     train_labels: np.ndarray
+    test_data: np.ndarray
     test_labels: np.ndarray
 
     def fit(self, **kwargs):
@@ -71,14 +71,14 @@ class CVPipleline(Classifier):
         print("Accuracy of model: {}".format(acc))
 
         precision, recall, fscore, support = precision_recall_fscore_support(
-            self.test_labels, self.predictions, average='macro')
+            self.test_labels, self.predictions_lda, average='macro')
         print('Precision: {0}, Recall: {1}, f1-score:{2}'.format(
             precision, recall, fscore))
         return acc, fscore
 
 
 @dataclass
-class OvertimePipelineDecoder(Classifier):
+class SKLearnPipelineDecoder(Classifier):
     pipeline: sklearn.pipeline.Pipeline
     X: np.ndarray = field(init=False, repr=False)
     y: np.ndarray = field(init=False, repr=False)
@@ -90,12 +90,12 @@ class OvertimePipelineDecoder(Classifier):
             epochs: mne.Epochs,
             labels: np.ndarray,
             resampling_freq: float = 40) -> None:
-        self.epochs = epochs.load_data().resample(resampling_freq)
+        self.epochs = epochs.copy().resample(resampling_freq)
         self.X = self.epochs.get_data()
         self.y = labels
         self.timeVec = epochs.times
 
-    def predict(self, w_size: float) -> np.array:
+    def predict(self, w_size) -> np.array:
         timeVec = self.timeVec[::10]
         for t, w_time in enumerate(timeVec):
             w_tmin = w_time - w_size / 2.
@@ -142,7 +142,7 @@ class MNECSPTransformer(FeatureTransformer):
 @dataclass
 class Decoding():
     epochs: mne.Epochs
-    score: np.ndarray = field(init=False)
+    classifier: Classifier = field(init=False)
 
     def get_train(
             self,
@@ -206,8 +206,8 @@ class Decoding():
     def labels_transform(self,
                          epochs: mne.Epochs = None,
                          n_classes: int = 2) -> np.ndarray:
-        _epochs = epochs if epochs else self.epochs
-        _labels = epochs.events[:, -1] if epochs else self.epochs.events[:, -1]
+        _epochs = self.epochs if epochs is None else epochs
+        _labels = self.labels if epochs is None else epochs.events[:, -1]
         _, rare, _ = P3_EVENTS_MAPINGS()
         wanted_keys = [
             _epochs.event_id[key]
@@ -218,6 +218,22 @@ class Decoding():
         rare_stims = rare_stims[:, -1]
         labels = np.where(np.isin(_labels, rare_stims), 1, 2)
         return labels
+
+    def train(self, data: np.ndarray, labels: np.ndarray,
+              classifier: Classifier) -> None:
+        assert self.data.size > 1, "data and labels are not present, Run get_train method first!"
+        if classifier:
+            classifier.fit()
+        else:
+            self.classifier.fit(data, labels)
+
+    def predict(self, data, labels, classifier: Classifier = None) -> float:
+        assert self.data.size > 0, "data and labels are not present, Run get_train method first!"
+        if classifier:
+            score = classifier.predict()
+        else:
+            score = self.classifier.predict(data, labels)
+        return score
 
     def plotMetrics(tasks, labels, evalMetric, metricName, ax):
         ax = sns.barplot(x=tasks, y=metricName, data=evalMetric, hue=labels)

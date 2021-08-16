@@ -22,7 +22,7 @@ class PipelineTestCase(unittest.TestCase):
         self.pipline = Pipeline(self.bids_path, verbose=logging.ERROR)
         self.erp =  ERPAnalysis(-0.1, 1)
         self.pipline.load_data()
-        # self.pipline.set_montage()
+        self.pipline.set_montage()
 
     def test_preprocessing(self):
         self.pipline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
@@ -46,8 +46,8 @@ class DecodingAnalysis(unittest.TestCase):
         self.pipline = Pipeline(self.bids_path, verbose=logging.ERROR)
         self.erp =  ERPAnalysis(-0.1, 1)
         self.pipline.load_data()
-        self.pipline.set_custom_events_mapping(task='P3')
         self.pipline.set_montage()
+        self.pipline.set_custom_events_mapping(task='P3')
         self.pipline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
         self.pipline.compute_epochs(self.erp)
         
@@ -88,7 +88,7 @@ def suite():
     # suite.addTest(PipelineTestCase('test_all_subject'))
     # suite.addTest(DecodingAnalysis('test_feature_transform'))
     # suite.addTest(DecodingAnalysis('test_classify_over_time'))
-    suite.addTest(DecodingAnalysis('test_classify_all_stim'))
+    # suite.addTest(DecodingAnalysis('test_classify_all_stim'))
     return suite
 
 if __name__ == '__main__':
