@@ -19,7 +19,7 @@ from sklearn.linear_model import LogisticRegression
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 import numpy as np
 import mne
 
@@ -48,6 +48,39 @@ class LDADecoder(Classifier):
         score = self.lda.score(data, labels)
         logging.info("Score {}".format(score))
         return score
+
+
+@dataclass
+class LDAPipleline(Classifier):
+    train_data: np.ndarray
+    train_labels: np.ndarray
+    test_data: np.ndarray
+    test_labels: np.ndarray
+
+    def fit(self):
+        # Linear Discriminant Analysis
+        self.clf_lda_pip = make_pipeline(
+            Vectorizer(), StandardScaler(), LinearDiscriminantAnalysis(solver='svd'))
+        self.clf_lda_pip.fit(self.train_data, self.train_labels)
+
+    def predict(self) -> np.ndarray:
+        self.predictions_lda = self.clf_lda_pip.predict(self.test_data)
+        # Predictions
+
+    def evaluate(self):
+        # Evaluation
+        report_lda = classification_report(
+            self.test_labels, self.predictions_lda, target_names=['Rare', 'Frequent'])
+        print('LDA Clasification Report:\n {}'.format(report_lda))
+
+        acc_lda = accuracy_score(self.test_labels, self.predictions_lda)
+        print("Accuracy of LDA model: {}".format(acc_lda))
+
+        precision_lda, recall_lda, fscore_lda, support_lda = precision_recall_fscore_support(
+            self.test_labels, self.predictions_lda, average='macro')
+        print(
+            'Precision: {0}, Recall: {1}, f1-score:{2}'.format(precision_lda, recall_lda, fscore_lda))
+        return acc_lda, fscore_lda
 
 
 @dataclass
@@ -119,18 +152,38 @@ class Decoding():
         else:
             return self.data, self.labels
 
+    def get_all_stim(self):
+
+        epoch_A = self.epochs['stimulus/A'].copy()
+        epoch_B = self.epochs['stimulus/B'].copy()
+        epoch_C = self.epochs['stimulus/C'].copy()
+        epoch_D = self.epochs['stimulus/D'].copy()
+        epoch_E = self.epochs['stimulus/E'].copy()
+
+        data = {
+            'A': {'epoch': epoch_A, 'data': epoch_A.get_data(), 'labels': self.labels_transform(epoch_A)},
+            'B': {'epoch': epoch_B, 'data': epoch_B.get_data(), 'labels': self.labels_transform(epoch_B)},
+            'C': {'epoch': epoch_C, 'data': epoch_C.get_data(), 'labels': self.labels_transform(epoch_C)},
+            'D': {'epoch': epoch_D, 'data': epoch_D.get_data(), 'labels': self.labels_transform(epoch_D)},
+            'E': {'epoch': epoch_E, 'data': epoch_E.get_data(), 'labels': self.labels_transform(epoch_E)},
+        }
+
+        return data
+
     def feature_transform(self, transformer: FeatureTransformer = MNECSPTransformer(2)) -> Tuple[np.ndarray, np.ndarray]:
         labels = self.labels_transform()
         data = transformer.transform(self.epochs.get_data(), labels)
         return data, labels
 
-    def labels_transform(self, n_classes=2) -> np.ndarray:
+    def labels_transform(self, epochs: mne.Epochs = None, n_classes: int = 2) -> np.ndarray:
+        _epochs = self.epochs if epochs is None else epochs
+        _labels = self.labels if epochs is None else epochs.events[:, -1]
         _, rare, _ = P3_EVENTS_MAPINGS()
-        wanted_keys = [self.epochs.event_id[key]
-                       for key in self.epochs.event_id if int(key.split('/')[-1]) in rare]
-        rare_stims = np.array([self.epochs.events[key]
+        wanted_keys = [_epochs.event_id[key]
+                       for key in _epochs.event_id if int(key.split('/')[-1]) in rare]
+        rare_stims = np.array([_epochs.events[key]
                               for key in wanted_keys])[:, -1]
-        labels = np.where(np.isin(self.labels, rare_stims), 1, 2)
+        labels = np.where(np.isin(_labels, rare_stims), 1, 2)
         return labels
 
     def train(self, data, labels, classifier: Classifier) -> None:

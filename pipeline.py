@@ -1,6 +1,7 @@
 from erpanalysis import ERPAnalysis
-from warnings import simplefilter
-import pandas as pd
+
+from tqdm import tqdm
+from multiprocessing import Pool
 from dataclasses import dataclass
 from genericpath import isfile
 from mne_bids import (BIDSPath, read_raw_bids)
@@ -11,6 +12,7 @@ import os
 import mne
 import logging
 import warnings
+import pandas as pd
 
 
 def P3_EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
@@ -103,6 +105,30 @@ class Pipeline:
     def compute_erp_peak(self, erp: ERPAnalysis, condition: str, thypo: float, offset: float = 0.05, channels: list[str] = []) -> pd.DataFrame:
         self.compute_epochs(erp)
         return erp.compute_peak(condition, thypo, offset, channels)
+    
+    def _parallel_process(self, pipeline):
+        pipeline.load_data()
+        pipeline.set_montage()
+        pipeline.make_pipeline([CleaningData(pipeline.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(pipeline.bids_path)])
+        pipeline.set_custom_events_mapping(task='P3')
+        return pipeline.raw
+
+    def load_multiple_subjects(self, n_subjects=40, preload: bool = False) -> None:
+        
+        curr_sub = [int(self.bids_path.subject)]
+        subjects = set(range(1, n_subjects + 1)) - set(curr_sub)
+        bids_paths = [self.bids_path.copy().update(subject=str(x).zfill(3))
+                  for x in subjects]
+        pipelines = [ Pipeline(bids_path=path, verbose=logging.ERROR) for path in bids_paths ]
+        with Pool(6) as p:
+            raws = list(tqdm(p.imap(self._parallel_process, pipelines), total=n_subjects-1))
+            
+        
+        raws.append(self.raw)
+        self.raw = mne.concatenate_raws(raws)
+        self.events, self.event_ids = mne.events_from_annotations(self.raw)
+        if preload: self.raw.load_data()
+        self.set_montage()
 
     def apply(self, step):
         if step.step() == 'cleaning':
@@ -127,7 +153,7 @@ class Pipeline:
 def load_all_subjects(bids_path: BIDSPath):
     # pre_ica = PrecomputedICA(bids_path)
     # pre_ica.compute_ica()
-    pip = Pipeline(bids_path)
+    pip= Pipeline(bids_path)
     try:
         pip.start_preprocessing()
         return "done"
@@ -144,8 +170,8 @@ def load_all_subjects(bids_path: BIDSPath):
 
 if __name__ == '__main__':
 
-    bids_root = os.path.join('data', 'P3')
-    bids_path = BIDSPath(subject='030', session='P3', task='P3',
+    bids_root= os.path.join('data', 'P3')
+    bids_path= BIDSPath(subject='030', session='P3', task='P3',
                          datatype='eeg', suffix='eeg', root=bids_root)
 
     # pip = Pipeline(bids_path)
@@ -156,7 +182,7 @@ if __name__ == '__main__':
 
     # pre_ica = PrecomputedICA(bids_path)
     # pre_ica.compute_ica()
-    bids_paths = [bids_path.copy().update(subject=str(x).zfill(3))
+    bids_paths= [bids_path.copy().update(subject=str(x).zfill(3))
                   for x in range(1, 41)]
     load_all_subjects(bids_paths[1])
     # a = map(load_all_subjects, bids_paths)

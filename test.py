@@ -22,7 +22,7 @@ class PipelineTestCase(unittest.TestCase):
         self.pipline = Pipeline(self.bids_path, verbose=logging.ERROR)
         self.erp =  ERPAnalysis(-0.1, 1)
         self.pipline.load_data()
-        self.pipline.set_montage()
+        # self.pipline.set_montage()
 
     def test_preprocessing(self):
         self.pipline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
@@ -32,6 +32,10 @@ class PipelineTestCase(unittest.TestCase):
     def test_erp_analysis(self):
         self.pipline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
         self.pipline.compute_epochs(self.erp)
+        
+    def test_all_subject(self):
+        self.pipline.load_multiple_subjects(40)
+        print("done")
     
         
         
@@ -68,12 +72,23 @@ class DecodingAnalysis(unittest.TestCase):
         clrs.fit(epoch_train, labels)
         scores = clrs.predict(w_size=1)
         
+    def test_classify_all_stim(self):
+
+        self.pipline.load_multiple_subjects(40)
+        self.pipline.compute_epochs(self.erp)
+        epoch_train = self.erp.epochs['stimulus']
+        decoder = Decoding(epoch_train)
+        stim_data = decoder.get_all_stim()
+        print("done")
+                
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(PipelineTestCase('test_preprocessing'))
-    suite.addTest(PipelineTestCase('test_erp_analysis'))
-    suite.addTest(DecodingAnalysis('test_feature_transform'))
-    suite.addTest(DecodingAnalysis('test_classify_over_time'))
+    # suite.addTest(PipelineTestCase('test_erp_analysis'))
+    # suite.addTest(PipelineTestCase('test_all_subject'))
+    # suite.addTest(DecodingAnalysis('test_feature_transform'))
+    # suite.addTest(DecodingAnalysis('test_classify_over_time'))
+    suite.addTest(DecodingAnalysis('test_classify_all_stim'))
     return suite
 
 if __name__ == '__main__':
