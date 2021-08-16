@@ -188,13 +188,15 @@ class Decoding():
 
     def train(self, data, labels, classifier: Classifier) -> None:
         assert self.data.size > 1, "data and labels are not present, Run get_train method first!"
-        self.classifier = classifier
-        classifier.fit(data, labels)
+        if classifier:
+            classifier.fit()
+        else:
+            self.classifier.fit(data, labels)
 
     def predict(self, data, labels, classifier: Classifier = None) -> float:
         assert self.data.size > 0, "data and labels are not present, Run get_train method first!"
         if classifier:
-            score = classifier.predict(data, labels)
+            score = classifier.predict()
         else:
             score = self.classifier.predict(data, labels)
         return score
