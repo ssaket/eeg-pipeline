@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from genericpath import isfile
 from mne_bids import (BIDSPath, read_raw_bids)
 from typing import Optional, Union, Tuple, Dict, List
+from erpanalysis import ERPAnalysis
 from preprocessing import *
 
 import os
@@ -27,13 +28,13 @@ class P3:
         stimlus = ['A', 'B', 'C', 'D', 'E']
 
         evts_stim = [
-            'stimulus/' + stimlus[i] + '/' + str(alph)
-            for i, x in enumerate(blocks)
-            for alph in x
+            'stimulus/' + stimlus[i] + '/rare/' +
+            str(alph) if alph in rare else 'stimulus/' + stimlus[i] + '/freq/' +
+            str(alph) for i, x in enumerate(blocks) for alph in x
         ]
         evts_id = dict((i + 3, evts_stim[i]) for i in range(0, len(evts_stim)))
-        evts_id[1] = 'response/201'
-        evts_id[2] = 'response/202'
+        evts_id[1] = 'response/correct/201'
+        evts_id[2] = 'response/error/202'
         return evts_id, rare, freq
 
 
@@ -123,7 +124,6 @@ class Pipeline:
         return pd.read_csv(fname, delimiter='\t')
 
     def compute_epochs(self, erp: any) -> mne.Epochs:
-        self.erps = erp
         return erp.compute_epochs(self.raw, self.events, self.event_ids)
 
     def compute_erp_peak(self,
@@ -195,6 +195,10 @@ class Pipeline:
             self.apply_decoder(step)
         elif step_name == 'classifier':
             self.apply_classifier(step)
+        elif step_name == 'reference':
+            self.apply_rereferencing(step)
+        elif step_name == 'resample':
+            self.apply_resampling(step)
         else:
             logging.error("Invalid pipeline operation!")
 
@@ -211,8 +215,10 @@ class Pipeline:
 @dataclass
 class MultiPipeline():
     bids_root: str
+    verbose: int = logging.ERROR
 
     def __post_init__(self) -> None:
+        logging.basicConfig(level=self.verbose)
         self.subjects = [
             sub for sub in os.listdir(self.bids_root)
             if os.path.isdir(os.path.join(self.bids_root, sub))
@@ -228,21 +234,48 @@ class MultiPipeline():
             for sub in self.subjects
         ]
 
-    def _parallel_process_pipes(self,
-                                pipeline,
-                                steps: list = None) -> mne.io.Raw:
+    def _parallel_preprocessing(self, pipeline) -> mne.io.Raw:
         pipeline.load_data()
         pipeline.set_montage()
-        if steps is None:
-            steps = [
-                CleaningData(pipeline.bids_path),
-                SimpleMNEFilter(0.1, 50, 'firwin'),
-                PrecomputedICA(pipeline.bids_path),
-                ('decoding',
-                 EEGDecoder('stimulus', (-0.2, 1), (0.0, 0.8), pipeline.raw))
-            ]
+        steps = [
+            CleaningData(pipeline.bids_path),
+            SimpleMNEFilter(0.5, 50, 'firwin'),
+            PrecomputedICA(pipeline.bids_path), ('reference', 'average'),
+            ('resample', 512)
+        ]
         pipeline.make_pipeline(steps)
         pipeline.set_custom_events_mapping(task='P3')
+        return pipeline
+
+    def start_erp_analysis(self, erpanalysis, jobs: int = 6):
+        pipelines = [
+            Pipeline(bids_path=path, verbose=logging.ERROR)
+            for path in self.bids_paths
+        ]
+        with Pool(jobs) as p:
+            pipelines = list(
+                tqdm(p.imap(self._parallel_preprocessing, pipelines),
+                     total=len(self.subjects)))
+
+        for pipeline in pipelines:
+            pipeline.compute_epochs(erpanalysis)
+
+        return erpanalysis
+
+    def _parallel_decoding(self, pipeline) -> mne.io.Raw:
+        pipeline.load_data()
+        pipeline.set_montage()
+        steps = [
+            CleaningData(pipeline.bids_path),
+            SimpleMNEFilter(1, 50, 'firwin'),
+            PrecomputedICA(pipeline.bids_path),
+            ('decoding',
+             EEGDecoder('stimulus', (-0.2, 1), (0.0, 0.8), pipeline.raw))
+        ]
+
+        pipeline.make_pipeline(steps)
+        pipeline.set_custom_events_mapping(task='P3')
+        del steps
         return pipeline
 
     def start_decoding(self, jobs: int = 6):
@@ -252,7 +285,7 @@ class MultiPipeline():
         ]
         with Pool(jobs) as p:
             pipes = list(
-                tqdm(p.imap(self._parallel_process_pipes, pipelines),
+                tqdm(p.imap(self._parallel_decoding, pipelines),
                      total=len(self.subjects)))
         return pipes
 
