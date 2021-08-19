@@ -56,37 +56,42 @@ class ERPAnalysis():
             channel: str,
             tmin: float,
             tmax: float,
-            average: bool = True) -> Tuple[str, float, float, float]:
+            mode: str) -> Tuple[str, float, float, float]:
 
         trial = trial.pick(channel)
         data = trial.data
-        freq = trial.info['sfreq']
-        if not average:
-            return (channel, np.argmax(data) / freq, np.max(data))
+
         tmin_idx, tmax_idx = trial.time_as_index([tmin, tmax],
                                                  use_rounding=True)
         data = data[:, tmin_idx:tmax_idx]
 
+        if mode == 'abs':
+            data = np.absolute(data)[0]
+
         return (channel, trial.times[tmin_idx + np.argmax(data)], np.max(data),
                 np.mean(data))
 
-    def compute_peak(self, stim: str, thypothesis: float, offset: float,
-                     channels: list[str]) -> pd.DataFrame:
+    def compute_peak(self,
+                     stim: str,
+                     thypothesis: float,
+                     offset: float,
+                     channels: list[str],
+                     mode: str = 'pos') -> pd.DataFrame:
 
         assert type(self.epochs) != np.ndarray, "Run compute_epochs first!"
         if isinstance(self.epochs, list):
             erp_dfs = []
-            for epoch in self.epochs:
+            for _i, epoch in enumerate(self.epochs):
                 erp_dfs.append(
-                    self._get_erp_df(epoch, stim, thypothesis, offset,
-                                     channels))
+                    self._get_erp_df(epoch, stim, thypothesis, offset, channels,
+                                     mode))
             return erp_dfs
         else:
             return self._get_erp_df(self.epochs, stim, thypothesis, offset,
-                                    channels)
+                                    channels, mode)
 
     def _get_erp_df(self, epochs: mne.Epochs, stim: str, thypothesis: float,
-                    offset: float, channels: list[str]):
+                    offset: float, channels: list[str], mode: str):
         epochs.load_data()
         peak_values = {
             'channel': [],
@@ -100,12 +105,26 @@ class ERPAnalysis():
         _epochs: mne.Epochs = epochs[stim] if stim else epochs
 
         for ix, trial in enumerate(_epochs.iter_evoked()):
+    
+            _channel, _latency, _peak = trial.get_peak(
+                tmin=thypothesis-offset, tmax=thypothesis+offset, 
+                ch_type='eeg', return_amplitude=True, mode=mode)
+
+            # We are using because MNE does not support mean amplitude using time window 
+            # and neither channel selection
             channel, latency, peak, mamp = self.get_peak_channel(
-                trial, channels[0], thypothesis - offset, thypothesis + offset)
+                trial, channels, thypothesis - offset,
+                thypothesis + offset, mode=mode)
+            # to make sure that our logic is correct    
+            if _channel == channel:
+                #allow difference upto 2 µV and latency upto 5 milliseconds
+                assert round(abs(peak -_peak) * 1e6) < 2, "Incorrect peak calculation logic!"
+                assert round(abs(latency - _latency) * 1e3) < 5, "Incorrect latency calculation logic!"
+
             latency = int(round(latency * 1e3))  # convert to milliseconds
             peak = int(round(peak * 1e6))  # convert to µV
             mamp = int(round(mamp * 1e6))  # convert to µV
-            peak_values['channel'].append(channel.strip())
+            peak_values['channel'].append(channel)
             peak_values['peak_amp'].append(peak)
             peak_values['mean_amp'].append(mamp)
             peak_values['latency'].append(latency)

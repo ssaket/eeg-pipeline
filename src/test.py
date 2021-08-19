@@ -12,22 +12,30 @@ import os
 class PipelineTestCase(unittest.TestCase):
     def setUp(self):
         bids_root = os.path.join('data', 'P3')
-        self.bids_path = BIDSPath(subject='030', session='P3', task='P3',datatype='eeg', suffix='eeg', root=bids_root)
+        self.bids_path = BIDSPath(subject='001', session='P3', task='P3',datatype='eeg', suffix='eeg', root=bids_root)
         self.pipeline = Pipeline(self.bids_path, verbose=logging.ERROR)
         self.erp =  ERPAnalysis(-0.1, 1)
         self.pipeline.load_data()
         self.pipeline.set_montage()
+        self.pipeline.set_custom_events_mapping(task='P3')
 
     def test_preprocessing(self):
-        self.pipeline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
+        self.pipeline.make_pipeline([SimpleMNEFilter(0.1, 50, 'firwin'), CleaningData(self.bids_path), PrecomputedICA(self.bids_path)])
         # self.assertEqual(self.widget.size(), (50, 50),
         #                  'incorrect default size')
 
-    def test_erp_analysis(self):
-        self.pipeline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
+    def test_erp_epochs(self):
+        self.pipeline.make_pipeline(SimpleMNEFilter(0.1, 50, 'firwin'), [CleaningData(self.bids_path), PrecomputedICA(self.bids_path)])
         erp_clean = ERPAnalysis(-0.1, 0.8)
         erp_clean.compute_epochs(self.pipeline.raw, self.pipeline.events, self.pipeline.event_ids, baseline=(0, None), reject_by_annotation=False)
         print(erp_clean.epochs)
+
+    def test_erp_peaks(self):
+        self.pipeline.make_pipeline([SimpleMNEFilter(0.1, 50, 'firwin'), CleaningData(self.bids_path), PrecomputedICA(self.bids_path)])
+        erp_clean = ERPAnalysis(-0.1, 0.8)
+        erp_clean.compute_epochs(self.pipeline.raw, self.pipeline.events, self.pipeline.event_ids, baseline=(0, None), reject_by_annotation=True)
+        peak = erp_clean.compute_peak('freq', 0.3, 0.1, ['Cz', 'FCz'])
+        print(peak)
         
     def test_all_subject(self):
         self.pipeline.load_multiple_subjects(40)
@@ -37,12 +45,13 @@ class MultiPipelineTestCase(unittest.TestCase):
     def setUp(self):
         bids_root = os.path.join('data', 'P3')
         self.multi_pipeline = MultiPipeline(bids_root)
+        self.erp = ERPAnalysis(-0.1, 0.8, baseline=(None, 0), reject_by_annotation=True, all_subjects=True)
+        self.multi_pipeline.start_erp_analysis(self.erp);
     
-    def test_multianalysis(self):
-        erp = ERPAnalysis(-0.1, 0.8, baseline=(None, 0), reject_by_annotation=True, all_subjects=True)
-        self.multi_pipeline.start_erp_analysis(erp)
-        rare_peaks_df = erp.compute_peak('rare', 0.35, 0.1, ['Cz'])
-        print(erp)
+    def test_erp_epochs(self):
+        self.erp.compute_peak('rare', 0.3, 0.1, ['Cz'], 'pos')
+        self.erp.compute_peak('freq', 0.3, 0.1, ['Cz'], 'pos')
+    
 
 
     def test(self):
@@ -95,12 +104,12 @@ class DecodingAnalysisTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     # suite.addTest(PipelineTestCase('test_preprocessing'))
-    # suite.addTest(PipelineTestCase('test_erp_analysis'))
+    suite.addTest(PipelineTestCase('test_erp_peaks'))
     # suite.addTest(PipelineTestCase('test_all_subject'))
     # suite.addTest(DecodingAnalysisTestCase('test_feature_transform'))
     # suite.addTest(DecodingAnalysisTestCase('test_classify_over_time'))
     # suite.addTest(DecodingAnalysisTestCase('test_classify_all_stim'))
-    suite.addTest(MultiPipelineTestCase('test_multianalysis'))
+    # suite.addTest(MultiPipelineTestCase('test_erp_epochs'))
     return suite
 
 if __name__ == '__main__':
