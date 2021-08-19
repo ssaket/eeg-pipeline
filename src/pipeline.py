@@ -236,6 +236,7 @@ class MultiPipeline():
 
     def _parallel_preprocessing(self, pipeline) -> mne.io.Raw:
         pipeline.load_data()
+        pipeline.set_custom_events_mapping(task='P3')
         pipeline.set_montage()
         steps = [
             CleaningData(pipeline.bids_path),
@@ -244,7 +245,6 @@ class MultiPipeline():
             ('resample', 512)
         ]
         pipeline.make_pipeline(steps)
-        pipeline.set_custom_events_mapping(task='P3')
         return pipeline
 
     def start_erp_analysis(self, erpanalysis, jobs: int = 6):

@@ -25,7 +25,9 @@ class PipelineTestCase(unittest.TestCase):
 
     def test_erp_analysis(self):
         self.pipeline.make_pipeline([CleaningData(self.bids_path), SimpleMNEFilter(0.1, 50, 'firwin'), PrecomputedICA(self.bids_path)])
-        self.pipeline.compute_epochs(self.erp)
+        erp_clean = ERPAnalysis(-0.1, 0.8)
+        erp_clean.compute_epochs(self.pipeline.raw, self.pipeline.events, self.pipeline.event_ids, baseline=(0, None), reject_by_annotation=False)
+        print(erp_clean.epochs)
         
     def test_all_subject(self):
         self.pipeline.load_multiple_subjects(40)
@@ -34,8 +36,14 @@ class PipelineTestCase(unittest.TestCase):
 class MultiPipelineTestCase(unittest.TestCase):
     def setUp(self):
         bids_root = os.path.join('data', 'P3')
-        multi_pipeline = MultiPipeline(bids_root)
-        self.pipelines = multi_pipeline.start_decoding()
+        self.multi_pipeline = MultiPipeline(bids_root)
+    
+    def test_multianalysis(self):
+        erp = ERPAnalysis(-0.1, 0.8, baseline=(None, 0), reject_by_annotation=True, all_subjects=True)
+        self.multi_pipeline.start_erp_analysis(erp)
+        rare_peaks_df = erp.compute_peak('rare', 0.35, 0.1, ['Cz'])
+        print(erp)
+
 
     def test(self):
         pass
@@ -90,9 +98,9 @@ def suite():
     # suite.addTest(PipelineTestCase('test_erp_analysis'))
     # suite.addTest(PipelineTestCase('test_all_subject'))
     # suite.addTest(DecodingAnalysisTestCase('test_feature_transform'))
-    # suite.addTest(DecodingAnalysis('test_classify_over_time'))
-    # suite.addTest(DecodingAnalysis('test_classify_all_stim'))
-    suite.addTest(MultiPipelineTestCase('test'))
+    # suite.addTest(DecodingAnalysisTestCase('test_classify_over_time'))
+    # suite.addTest(DecodingAnalysisTestCase('test_classify_all_stim'))
+    suite.addTest(MultiPipelineTestCase('test_multianalysis'))
     return suite
 
 if __name__ == '__main__':
