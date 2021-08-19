@@ -58,7 +58,7 @@ class ERPAnalysis():
             tmax: float,
             average: bool = True) -> Tuple[str, float, float, float]:
 
-        trial = trial.pick(channel).copy()
+        trial = trial.pick(channel)
         data = trial.data
         freq = trial.info['sfreq']
         if not average:
@@ -74,26 +74,34 @@ class ERPAnalysis():
                      channels: list[str]) -> pd.DataFrame:
 
         assert type(self.epochs) != np.ndarray, "Run compute_epochs first!"
+        if isinstance(self.epochs, list):
+            erp_dfs = []
+            for epoch in self.epochs:
+                erp_dfs.append(
+                    self._get_erp_df(epoch, stim, thypothesis, offset,
+                                     channels))
+            return erp_dfs
+        else:
+            return self._get_erp_df(self.epochs, stim, thypothesis, offset,
+                                    channels)
+
+    def _get_erp_df(self, epochs: mne.Epochs, stim: str, thypothesis: float,
+                    offset: float, channels: list[str]):
+        epochs.load_data()
         peak_values = {
             'channel': [],
             'peak_amp': [],
             'mean_amp': [],
             'latency': [],
-            'trial': []
+            'trial': [],
+            'stimulus': [],
+            'condition': []
         }
-        _epochs: mne.Epochs = self.epochs[stim] if stim else self.epochs
+        _epochs: mne.Epochs = epochs[stim] if stim else epochs
 
         for ix, trial in enumerate(_epochs.iter_evoked()):
-            # channel, _latency, _value = trial.get_peak(ch_type='eeg', tmin=thypothesis - offset, tmax=thypothesis + offset,
-            #                                          return_amplitude=True, mode='pos')
-            # if len(channels) != 0 and not channel in channels:
-            #     continue
-
             channel, latency, peak, mamp = self.get_peak_channel(
                 trial, channels[0], thypothesis - offset, thypothesis + offset)
-
-            # assert value == _value and latency == _latency
-
             latency = int(round(latency * 1e3))  # convert to milliseconds
             peak = int(round(peak * 1e6))  # convert to µV
             mamp = int(round(mamp * 1e6))  # convert to µV
@@ -102,8 +110,14 @@ class ERPAnalysis():
             peak_values['mean_amp'].append(mamp)
             peak_values['latency'].append(latency)
             peak_values['trial'].append(ix)
+            if len(stim.split('/')) > 1:
+                peak_values['stimulus'].append(stim.split('/')[0])
+                peak_values['condition'].append(stim.split('/')[1])
+            else:
+                peak_values['stimulus'].append('stimulus')
+                peak_values['condition'].append(stim)
 
-            logging.info(
+            logging.debug(
                 'Trial {}: peak of {} µV and mean of {} µV at {} ms in channel {}'
                 .format(ix, peak, mamp, latency, channel))
         df = pd.DataFrame.from_dict(peak_values)
