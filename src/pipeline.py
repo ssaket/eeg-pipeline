@@ -144,8 +144,8 @@ class Pipeline:
         pipeline.load_data()
         pipeline.set_montage()
         pipeline.make_pipeline([
-            CleaningData(pipeline.bids_path),
             SimpleMNEFilter(0.1, 50, 'firwin'),
+            CleaningData(pipeline.bids_path),
             PrecomputedICA(pipeline.bids_path)
         ])
         pipeline.set_custom_events_mapping(task='P3')
@@ -239,8 +239,8 @@ class MultiPipeline():
         pipeline.set_custom_events_mapping(task='P3')
         pipeline.set_montage()
         steps = [
-            CleaningData(pipeline.bids_path),
             SimpleMNEFilter(0.5, 50, 'firwin'),
+            CleaningData(pipeline.bids_path),
             PrecomputedICA(pipeline.bids_path), ('reference', 'average'),
             ('resample', 512)
         ]
@@ -266,8 +266,8 @@ class MultiPipeline():
         pipeline.load_data()
         pipeline.set_montage()
         steps = [
-            CleaningData(pipeline.bids_path),
             SimpleMNEFilter(1, 50, 'firwin'),
+            CleaningData(pipeline.bids_path),
             PrecomputedICA(pipeline.bids_path),
             ('decoding',
              EEGDecoder('stimulus', (-0.2, 1), (0.0, 0.8), pipeline.raw))

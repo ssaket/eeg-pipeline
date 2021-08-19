@@ -117,7 +117,7 @@ class CleaningData():
         raw.info['bads'] = [raw.ch_names[idx] for idx in self.bad_channels]
         if interpolate:
             raw.interpolate_bads()
-        raw.set_annotations(raw.annotations + self.bad_annotations)
+        raw.annotations.append(self.bad_annotations.onset, self.bad_annotations.duration, self.bad_annotations.description)
 
 
 @dataclass
