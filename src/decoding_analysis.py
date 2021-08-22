@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import logging
+from mne import epochs
 from sklearn import svm
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
@@ -320,8 +321,9 @@ class EEGDecoder():
 
         clf_svm = make_pipeline(Vectorizer(), StandardScaler(), svm.SVC(kernel='linear', C=1))
         timeDecode = SlidingEstimator(clf_svm);
-        scores = cross_val_multiscore(timeDecode, self.epochs.get_data(), self.labels_transform(), cv=StratifiedKFold(n_splits=5), n_jobs=2);
-        return scores
+        epochs = self.epochs.load_data().copy().resample(60)
+        scores = cross_val_multiscore(timeDecode, epochs.get_data(), self.labels_transform(), cv=StratifiedKFold(n_splits=5), n_jobs=2);
+        return (epochs.times, scores)
 
 
 class P3:
