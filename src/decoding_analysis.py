@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 import logging
+from sklearn import svm
 
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import cross_val_score
@@ -7,7 +8,7 @@ from sklearn.metrics import classification_report, accuracy_score, precision_rec
 from sklearn.pipeline import Pipeline, make_pipeline
 
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import seaborn as sns
 import numpy as np
 import mne
@@ -134,33 +135,63 @@ class MNECSPTransformer(FeatureTransformer):
 
 @dataclass
 class EEGDecoder():
-    condition: str
+    condition: Union[str, List[str]]
     epoch_times: Tuple[float, float]
     decoding_times: Tuple[float, float]
     raw: mne.io.Raw = field(repr=False)
+    equalize_events: bool = False
     epochs: mne.Epochs = field(init=False, repr=False)
     score: np.ndarray = field(init=False, repr=False)
 
     def __post_init__(self):
         events, ids = mne.events_from_annotations(self.raw)
-        epochs = mne.Epochs(self.raw, events, ids, self.epoch_times[0], self.epoch_times[1], None, reject_by_annotation=False)
-        self.epochs = epochs[self.condition].load_data().crop(self.decoding_times[0], self.decoding_times[1]).copy()
+        epochs = mne.Epochs(self.raw,
+                            events,
+                            ids,
+                            self.epoch_times[0],
+                            self.epoch_times[1],
+                            None,
+                            reject_by_annotation=False)
+        if self.equalize_events:
+            epochs.equalize_event_counts(ids)
+        self.epochs = epochs[self.condition].load_data().crop(
+            self.decoding_times[0], self.decoding_times[1])
+
+    def _equalize_samples(self, data: np.ndarray,
+                          labels: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        labels_freq = np.random.choice(
+            np.where(labels == 2)[0], len(np.where(labels == 1)[0]))
+        labels_rare = np.where(labels == 1)[0]
+        labels_idx = np.hstack((labels_freq, labels_rare))
+
+        data = data[labels_idx, :]
+        labels = labels[labels_idx]
+
+        return data, labels
 
     def get_train(
             self,
             channels: list[str] = None,
-            transform_feature: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+            transform_feature: bool = False,
+            equalize_labels_count: bool = False
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """Returns training data from the epochs averaged across times"""
         if channels:
             data = np.array(self.epochs.get_data(picks=channels).mean(axis=2))
         else:
             data = np.array(self.epochs.get_data().mean(axis=2))
 
         if transform_feature:
-            return self.feature_transform(data), self.labels_transform()
+            data, labels = self.feature_transform(data), self.labels_transform()
         else:
-            return data, self.labels_transform()
+            data, labels = data, self.labels_transform()
 
-    def get_all_stim(self):
+        if equalize_labels_count:
+            data, labels = self._equalize_samples(data, labels)
+
+        return data, labels
+
+    def get_all_stim(self, equalize_labels_count: bool = False):
 
         epoch_A = self.epochs['stimulus/A'].copy()
         epoch_B = self.epochs['stimulus/B'].copy()
@@ -170,29 +201,59 @@ class EEGDecoder():
 
         data = {
             'A': {
-                'epoch': epoch_A,
-                'data': epoch_A.get_data(),
-                'labels': self.labels_transform(epoch_A)
+                'epoch':
+                    epoch_A,
+                'data':
+                    epoch_A.get_data(),
+                'labels':
+                    self.labels_transform(epoch_A),
+                'norm_samples':
+                    self._equalize_samples(epoch_A.get_data().mean(axis=2),
+                                           self.labels_transform(epoch_A))
             },
             'B': {
-                'epoch': epoch_B,
-                'data': epoch_B.get_data(),
-                'labels': self.labels_transform(epoch_B)
+                'epoch':
+                    epoch_B,
+                'data':
+                    epoch_B.get_data(),
+                'labels':
+                    self.labels_transform(epoch_B),
+                'norm_samples':
+                    self._equalize_samples(epoch_B.get_data().mean(axis=2),
+                                           self.labels_transform(epoch_B))
             },
             'C': {
-                'epoch': epoch_C,
-                'data': epoch_C.get_data(),
-                'labels': self.labels_transform(epoch_C)
+                'epoch':
+                    epoch_C,
+                'data':
+                    epoch_C.get_data(),
+                'labels':
+                    self.labels_transform(epoch_C),
+                'norm_samples':
+                    self._equalize_samples(epoch_C.get_data().mean(axis=2),
+                                           self.labels_transform(epoch_C))
             },
             'D': {
-                'epoch': epoch_D,
-                'data': epoch_D.get_data(),
-                'labels': self.labels_transform(epoch_D)
+                'epoch':
+                    epoch_D,
+                'data':
+                    epoch_D.get_data(),
+                'labels':
+                    self.labels_transform(epoch_D),
+                'norm_samples':
+                    self._equalize_samples(epoch_D.get_data().mean(axis=2),
+                                           self.labels_transform(epoch_D))
             },
             'E': {
-                'epoch': epoch_E,
-                'data': epoch_E.get_data(),
-                'labels': self.labels_transform(epoch_E)
+                'epoch':
+                    epoch_E,
+                'data':
+                    epoch_E.get_data(),
+                'labels':
+                    self.labels_transform(epoch_E),
+                'norm_samples':
+                    self._equalize_samples(epoch_E.get_data().mean(axis=2),
+                                           self.labels_transform(epoch_E))
             },
         }
 
@@ -208,6 +269,7 @@ class EEGDecoder():
     def labels_transform(self,
                          epochs: mne.Epochs = None,
                          n_classes: int = 2) -> np.ndarray:
+        """Returns class labels from the epochs events based on number of classes"""
         _epochs = epochs if epochs else self.epochs
         _labels = epochs.events[:, -1] if epochs else self.epochs.events[:, -1]
         _, rare, _ = P3.EVENTS_MAPINGS()
@@ -224,27 +286,52 @@ class EEGDecoder():
     def plotMetrics(tasks, labels, evalMetric, metricName, ax):
         ax = sns.barplot(x=tasks, y=metricName, data=evalMetric, hue=labels)
         return ax
-    
-    def run_svm_decoder(self):
+
+    def run_svm_(self):
+        """Runs inside a seperate process using multiprocessing"""
         from mne.decoding.transformer import Vectorizer
         from sklearn.preprocessing import StandardScaler
         from sklearn import svm
         from sklearn.model_selection import GridSearchCV, StratifiedKFold
         data, labels = self.get_train(channels=['Cz', 'CPz'])
-        clf_svm_pip = make_pipeline(Vectorizer(), StandardScaler(), svm.SVC(random_state=42))
-        parameters = {'svc__kernel':['linear', 'rbf', 'sigmoid'], 'svc__C':[0.1, 1, 10]}
-        gs_cv_svm = GridSearchCV(clf_svm_pip, parameters, scoring='accuracy', cv=StratifiedKFold(n_splits=5), return_train_score=True);
+        clf_svm_pip = make_pipeline(Vectorizer(), StandardScaler(),
+                                    svm.SVC(random_state=42))
+        parameters = {
+            'svc__kernel': ['linear', 'rbf', 'sigmoid'],
+            'svc__C': [0.1, 1, 10]
+        }
+        gs_cv_svm = GridSearchCV(clf_svm_pip,
+                                 parameters,
+                                 scoring='accuracy',
+                                 cv=StratifiedKFold(n_splits=5),
+                                 return_train_score=True)
         gs_cv_svm.fit(data, labels)
         logging.info('Best Parameters: {}'.format(gs_cv_svm.best_params_))
         logging.info('Best Score: {}'.format(gs_cv_svm.best_score_))
         return gs_cv_svm.best_score_, gs_cv_svm.best_params_
 
+    def run_sliding_(self):
+        """Runs inside a seperate process using multiprocessing"""
+        from mne.decoding.search_light import SlidingEstimator
+        from mne.decoding.transformer import Vectorizer
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.model_selection import StratifiedKFold
+        from mne.decoding.base import cross_val_multiscore
+
+        clf_svm = make_pipeline(Vectorizer(), StandardScaler(), svm.SVC(kernel='linear', C=1))
+        timeDecode = SlidingEstimator(clf_svm);
+        scores = cross_val_multiscore(timeDecode, self.epochs.get_data(), self.labels_transform(), cv=StratifiedKFold(n_splits=5), n_jobs=2);
+        return scores
+
+
 class P3:
+
     @abstractmethod
     def EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
         blocks = np.array(
             [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
-        rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))]).tolist()
+        rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))
+                        ]).tolist()
         freq = np.setdiff1d(blocks.flatten(), rare).tolist()
 
         stimlus = ['A', 'B', 'C', 'D', 'E']
