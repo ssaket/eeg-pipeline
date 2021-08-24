@@ -1,58 +1,57 @@
-from dataclasses import dataclass
-import json
-import os
-from pipeline import Pipeline
-from mne_bids.path import BIDSPath
+from dataclasses import dataclass, field
+import mne
 import pandas as pd
-
+import numpy as np
+from sklearn import linear_model
+from mne.stats import linear_regression
+from abc import ABC, abstractmethod
 
 @dataclass
-class LinearModel():
-    pass
+class Encoder(ABC):
+    @abstractmethod
+    def fit():
+        pass
 
+@dataclass
+class P3_LinearModel(Encoder):
+    model: linear_model.LinearRegression = linear_model.LinearRegression()
+    betas: list = field(init=False, repr=False, default_factory=list)
 
-def _get_stimulas(row):
-    if row.value == 202 or row.value == 201: return None
-    desc = row.description
-    stim = desc.split('-')[1].split(',')[1].split(' ')[-1]
-    return stim
+    def fit(self, epochs: mne.Epochs):
+        epochs.equalize_event_counts(['stimulus', 'response']); # because we have one extra response
+        reaction_time = epochs['stimulus'].events[:,0] - epochs['response'].events[:,0]
+        epochs = epochs['stimulus']
+        df = self.get_encoding_data(epochs, 'stimulus', channels=['Pz'])
 
+        X = np.zeros([epochs.events.shape[0], 6]) # 6 because we have 5 betas
+        X[:,0] = 1 # intercept
+        X[np.where(df['condition'] =="rare"), 5] = 1
+        X[np.where(df['stimulus']=="B"),1] = 1
+        X[np.where(df['stimulus']=="C"),2] = 1
+        X[np.where(df['stimulus']=="D"),3] = 1
+        X[np.where(df['stimulus']=="E"),4] = 1
 
-def _get_condition(row):
-    if row.value == 202 or row.value == 201: return None
-    desc = row.description
-    stim = desc.split('-')[1].split(',')[1].split(' ')[-1]
-    target = desc.split('-')[1].split(',')[0].split(' ')[-1]
-    if stim == target:
-        return 'Rare'
-    else:
-        return 'Frequent'
-
-
-if __name__ == '__main__':
-    bids_root = os.path.join('data', 'P3')
-    bids_path = BIDSPath(subject='001',
-                         session='P3',
-                         task='P3',
-                         datatype='eeg',
-                         suffix='eeg',
-                         root=bids_root)
-    evts_file = os.path.join(bids_path.root, 'task-P3_events.json')
-    events_desc = json.load(open(evts_file, ))
-    events_desc = events_desc['value']['Levels']
-
-    pip = Pipeline(bids_path)
-    pip.start_preprocessing()
-
-    df = pip.get_events_df()
-    df['description'] = df.apply(lambda row: events_desc[str(row.value)],
-                                 axis=1)
-    df['stim'] = df.apply(lambda row: _get_stimulas(row), axis=1)
-    df['cond'] = df.apply(lambda row: _get_condition(row), axis=1)
-
-    raw = pip.raw
-    raw_cz = raw.pick_channels(['Cz'])
-
-    print(df)
-    df.plot()
-    sns.pairplot(df, hue='trial_type')
+        X = np.hstack((X, reaction_time.reshape(-1, 1)))
+            
+        predictors = ['intercept', 'stim_b', 'stim_c', 'stim_d', 'stim_e', 'condition', 'reaction_time']
+        df_mne = pd.DataFrame(X, columns=predictors)
+        res = linear_regression(epochs['stimulus'], df_mne, names=predictors)
+        self.betas.append(res)
+    
+    @staticmethod
+    def get_encoding_data(epochs: mne.Epochs, condition: str, channels: list[str]):
+        #reverse mapping of event_id from epochs
+        inv_map = {v: k for k, v in epochs[condition].event_id.items()}
+        event_names = [
+            (i, inv_map[i]) for i in epochs[condition].events[:, -1]
+        ]
+        df = dict(epochs=[], stimulus=[], condition=[], code=[])
+        for i, item in enumerate(event_names):
+            code, name = item
+            df['epochs'].append(i)
+            df['stimulus'].append(name.split('/')[1])
+            df['condition'].append(name.split('/')[2])
+            df['code'].append(code)
+        for channel in channels:
+            df[channel] = epochs[condition].get_data(picks=[channel]).mean(axis=2).reshape(-1)
+        return pd.DataFrame.from_dict(df)

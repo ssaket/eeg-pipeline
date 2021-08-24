@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from genericpath import isfile
 from mne_bids import (BIDSPath, read_raw_bids)
 from typing import Optional, Union, Tuple, Dict, List
+from encoding_analysis import Encoder
 from erpanalysis import ERPAnalysis
 from preprocessing import *
 
@@ -95,7 +96,9 @@ class Pipeline:
                          sampling_freq: int,
                          padding: str = 'auto') -> None:
         logging.info("Applying resampling")
-        self.raw.resample(sampling_freq, npad=padding)
+        self.raw, self.events = self.raw.resample(sampling_freq,
+                                                  npad=padding,
+                                                  events=self.events)
 
     def apply_rereferencing(self, reference_channels: Union[List[str],
                                                             str]) -> None:
@@ -136,9 +139,11 @@ class Pipeline:
         return erp.compute_peak(condition, thypo, offset, channels)
 
     def apply_decoder(self, decoder: EEGDecoder) -> Tuple:
-        scores = decoder.run_svm_decoder()
-        self.decoding_score = scores
-        return scores
+        svm_scores = decoder.run_svm_()
+        # sliding_scores = decoder.run_sliding_() somehow doesnot work!
+        decoding_score = svm_scores
+        self.decoding_score = decoding_score
+        return decoding_score
 
     def _parallel_process_raws(self, pipeline) -> mne.io.Raw:
         pipeline.load_data()
@@ -234,15 +239,15 @@ class MultiPipeline():
             for sub in self.subjects
         ]
 
-    def _parallel_preprocessing(self, pipeline) -> mne.io.Raw:
+    def start_preprocessing(self, pipeline) -> mne.io.Raw:
         pipeline.load_data()
         pipeline.set_custom_events_mapping(task='P3')
         pipeline.set_montage()
         steps = [
             SimpleMNEFilter(0.5, 50, 'firwin'),
             CleaningData(pipeline.bids_path),
-            PrecomputedICA(pipeline.bids_path), ('reference', 'average'),
-            ('resample', 512)
+            PrecomputedICA(pipeline.bids_path), ('reference', ['P9', 'P10']),
+            ('resample', 256)
         ]
         pipeline.make_pipeline(steps)
         return pipeline
@@ -254,7 +259,7 @@ class MultiPipeline():
         ]
         with Pool(jobs) as p:
             pipelines = list(
-                tqdm(p.imap(self._parallel_preprocessing, pipelines),
+                tqdm(p.imap(self.start_preprocessing, pipelines),
                      total=len(self.subjects)))
 
         for pipeline in pipelines:
@@ -262,20 +267,28 @@ class MultiPipeline():
 
         return erpanalysis
 
+    def start_encoding_analysis(self, erp: ERPAnalysis, encoder: Encoder):
+        assert erp.all_subjects, 'You have to run erp analysis first'
+        for epoch in erp.epochs:
+            encoder.fit(epoch)
+
     def _parallel_decoding(self, pipeline) -> mne.io.Raw:
         pipeline.load_data()
+        pipeline.set_custom_events_mapping(task='P3')
         pipeline.set_montage()
         steps = [
-            SimpleMNEFilter(1, 50, 'firwin'),
+            SimpleMNEFilter(0.1, 50, 'firwin'),
             CleaningData(pipeline.bids_path),
             PrecomputedICA(pipeline.bids_path),
             ('decoding',
-             EEGDecoder('stimulus', (-0.2, 1), (0.0, 0.8), pipeline.raw))
+             EEGDecoder('stimulus', (-0.1, 0.8), (0.1, 0.7),
+                        pipeline.raw,
+                        baseline=(None, 0),
+                        reject_by_annotation=True,
+                        equalize_events=True))
         ]
 
         pipeline.make_pipeline(steps)
-        pipeline.set_custom_events_mapping(task='P3')
-        del steps
         return pipeline
 
     def start_decoding(self, jobs: int = 6):
@@ -284,53 +297,9 @@ class MultiPipeline():
             for path in self.bids_paths
         ]
         with Pool(jobs) as p:
-            pipes = list(
+            pipelines = list(
                 tqdm(p.imap(self._parallel_decoding, pipelines),
                      total=len(self.subjects)))
-        return pipes
 
-
-def load_all_subjects(bids_path: BIDSPath):
-    # pre_ica = PrecomputedICA(bids_path)
-    # pre_ica.compute_ica()
-    pip = Pipeline(bids_path)
-    try:
-        pip.start_preprocessing()
-        return "done"
-    except Exception as err:
-        logging.error("failed for subject {}".format(bids_path.subject))
-        logging.error(err)
-        return bids_path.subject
-
-    # clean = CleaningData(bids_path)
-    # clean.load_bad_data()
-
-    # return clean.bad_annotations
-
-
-if __name__ == '__main__':
-
-    bids_root = os.path.join('data', 'P3')
-    bids_path = BIDSPath(subject='030',
-                         session='P3',
-                         task='P3',
-                         datatype='eeg',
-                         suffix='eeg',
-                         root=bids_root)
-
-    ml_pi = MultiPipeline(bids_root)
-
-    # pip = Pipeline(bids_path)
-    # pip.load_data()
-
-    # sim_filter = SimpleMNEFilter(0.1, 50, 'firwin')
-    # pip.apply_filter(sim_filter)
-
-    # pre_ica = PrecomputedICA(bids_path)
-    # pre_ica.compute_ica()
-    bids_paths = [
-        bids_path.copy().update(subject=str(x).zfill(3)) for x in range(1, 41)
-    ]
-    load_all_subjects(bids_paths[1])
-    # a = map(load_all_subjects, bids_paths)
-    # print(list(a))
+        # scores = [ pipeline.apply_decoder(decoder) for pipeline in pipelines]
+        return pipelines

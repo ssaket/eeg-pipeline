@@ -141,6 +141,9 @@ class EEGDecoder():
     decoding_times: Tuple[float, float]
     raw: mne.io.Raw = field(repr=False)
     equalize_events: bool = False
+    baseline: Union[Tuple, None] = None
+    reject_by_annotation: bool = False
+    reject: Union[dict, None] = None
     epochs: mne.Epochs = field(init=False, repr=False)
     score: np.ndarray = field(init=False, repr=False)
 
@@ -151,8 +154,9 @@ class EEGDecoder():
                             ids,
                             self.epoch_times[0],
                             self.epoch_times[1],
-                            None,
-                            reject_by_annotation=False)
+                            self.baseline,
+                            reject_by_annotation=self.reject_by_annotation,
+                            reject=self.reject)
         if self.equalize_events:
             epochs.equalize_event_counts(ids)
         self.epochs = epochs[self.condition].load_data().crop(
@@ -178,9 +182,9 @@ class EEGDecoder():
     ) -> Tuple[np.ndarray, np.ndarray]:
         """Returns training data from the epochs averaged across times"""
         if channels:
-            data = np.array(self.epochs.get_data(picks=channels).mean(axis=2))
+            data = np.array(self.epochs.get_data(picks=channels))
         else:
-            data = np.array(self.epochs.get_data().mean(axis=2))
+            data = np.array(self.epochs.get_data())
 
         if transform_feature:
             data, labels = self.feature_transform(data), self.labels_transform()
