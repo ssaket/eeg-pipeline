@@ -14,6 +14,7 @@ class Encoder(ABC):
 
 @dataclass
 class P3_LinearModel(Encoder):
+    """Mass Univariate analysis for P3 task"""
     model: linear_model.LinearRegression = linear_model.LinearRegression()
     betas: list = field(init=False, repr=False, default_factory=list)
 
@@ -40,6 +41,7 @@ class P3_LinearModel(Encoder):
     
     @staticmethod
     def get_encoding_data(epochs: mne.Epochs, condition: str, channels: list[str]):
+        """Get the encoding data for P3 task"""
         #reverse mapping of event_id from epochs
         inv_map = {v: k for k, v in epochs[condition].event_id.items()}
         event_names = [
