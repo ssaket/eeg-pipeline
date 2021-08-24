@@ -9,7 +9,7 @@ from sklearn.metrics import classification_report, accuracy_score, precision_rec
 from sklearn.pipeline import Pipeline, make_pipeline
 
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 import seaborn as sns
 import numpy as np
 import mne
@@ -17,6 +17,7 @@ import mne
 
 @dataclass
 class Classifier(ABC):
+    """Base classifier"""
 
     @abstractmethod
     def fit():
@@ -29,6 +30,7 @@ class Classifier(ABC):
 
 @dataclass
 class LDADecoder(Classifier):
+    """Simple sklearn LDA decoder"""
     lda: LinearDiscriminantAnalysis = field(
         init=False, default_factory=LinearDiscriminantAnalysis)
 
@@ -44,6 +46,7 @@ class LDADecoder(Classifier):
 
 @dataclass
 class CVPipleline(Classifier):
+    """Cross-validation pipleline"""
     cv_pip: Pipeline
     train_data: np.ndarray
     test_data: np.ndarray
@@ -73,7 +76,10 @@ class CVPipleline(Classifier):
 
 
 @dataclass
-class OvertimePipelineDecoder(Classifier):
+class CrossTimePipelineDecoder(Classifier):
+    """Classifier across time
+    Taken from EEG: excercise (https://github.com/s-ccs/course_eeg_SS2021/tree/main/exercises)
+    """
     pipeline: Pipeline
     X: np.ndarray = field(init=False, repr=False)
     y: np.ndarray = field(init=False, repr=False)
@@ -118,7 +124,7 @@ class OvertimePipelineDecoder(Classifier):
 
 @dataclass
 class FeatureTransformer(ABC):
-
+    """Base Transformer"""
     @abstractmethod
     def transform() -> np.ndarray:
         pass
@@ -126,6 +132,7 @@ class FeatureTransformer(ABC):
 
 @dataclass
 class MNECSPTransformer(FeatureTransformer):
+    """Simple CSP built on top of MNE"""
     n_components: int
 
     def transform(self, data: np.ndarray, labels: np.ndarray) -> np.ndarray:
@@ -136,6 +143,7 @@ class MNECSPTransformer(FeatureTransformer):
 
 @dataclass
 class EEGDecoder():
+    """Decode EEG data using condition, epochs"""
     condition: Union[str, List[str]]
     epoch_times: Tuple[float, float]
     decoding_times: Tuple[float, float]
@@ -196,7 +204,7 @@ class EEGDecoder():
 
         return data, labels
 
-    def get_all_stim(self, equalize_labels_count: bool = False):
+    def get_all_stim(self, equalize_labels_count: bool = False) -> Dict[str, Any]:
 
         epoch_A = self.epochs['stimulus/A'].copy()
         epoch_B = self.epochs['stimulus/B'].copy()
@@ -267,6 +275,7 @@ class EEGDecoder():
     def feature_transform(
         self, transformer: FeatureTransformer = MNECSPTransformer(2)
     ) -> Tuple[np.ndarray, np.ndarray]:
+        """Transform data using custom Transformers"""
         labels = self.labels_transform()
         data = transformer.transform(self.epochs.get_data(), labels)
         return data, labels
@@ -287,10 +296,6 @@ class EEGDecoder():
         rare_stims = rare_stims[:, -1]
         labels = np.where(np.isin(_labels, rare_stims), 1, 2)
         return labels
-
-    def plotMetrics(tasks, labels, evalMetric, metricName, ax):
-        ax = sns.barplot(x=tasks, y=metricName, data=evalMetric, hue=labels)
-        return ax
 
     def run_svm_(self):
         """Runs inside a seperate process using multiprocessing"""
@@ -323,10 +328,15 @@ class EEGDecoder():
         from sklearn.model_selection import StratifiedKFold
         from mne.decoding.base import cross_val_multiscore
 
-        clf_svm = make_pipeline(Vectorizer(), StandardScaler(), svm.SVC(kernel='linear', C=1))
-        timeDecode = SlidingEstimator(clf_svm);
+        clf_svm = make_pipeline(Vectorizer(), StandardScaler(),
+                                svm.SVC(kernel='linear', C=1))
+        timeDecode = SlidingEstimator(clf_svm)
         epochs = self.epochs.load_data().copy().resample(60)
-        scores = cross_val_multiscore(timeDecode, epochs.get_data(), self.labels_transform(), cv=StratifiedKFold(n_splits=5), n_jobs=2);
+        scores = cross_val_multiscore(timeDecode,
+                                      epochs.get_data(),
+                                      self.labels_transform(),
+                                      cv=StratifiedKFold(n_splits=5),
+                                      n_jobs=2)
         return (epochs.times, scores)
 
 
@@ -334,6 +344,7 @@ class P3:
 
     @abstractmethod
     def EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
+        """Returns events mapping for the P3 task"""
         blocks = np.array(
             [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
         rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))

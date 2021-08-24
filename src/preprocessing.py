@@ -14,9 +14,11 @@ from mne_bids.path import BIDSPath
 
 @dataclass
 class BaseFilter(ABC):
+
     @abstractmethod
     def apply_filter():
         pass
+
     @staticmethod
     def step():
         return "filtering"
@@ -30,17 +32,22 @@ class SimpleMNEFilter(BaseFilter):
     name: str
 
     def apply_filter(self, raw: mne.io.Raw):
-        return raw.filter(l_freq=self.l_freq, h_freq=self.h_freq, fir_design=self.name)
+        return raw.filter(l_freq=self.l_freq,
+                          h_freq=self.h_freq,
+                          fir_design=self.name)
 
 
 @dataclass
 class BaseICA(ABC):
+
     @abstractmethod
     def compute_ica(self, raw: mne.io.Raw):
         pass
+
     @abstractmethod
     def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
         pass
+
     @staticmethod
     def step():
         return "ica"
@@ -56,8 +63,9 @@ class SimpleMNEICA(BaseICA):
     ica: mne.preprocessing.ica = field(init=False)
 
     def compute_ica(self, raw: mne.io.Raw):
-        self.ica = mne.preprocessing.ICA(
-            n_components=self.n_components, method=self.method, random_state=self.random_state)
+        self.ica = mne.preprocessing.ICA(n_components=self.n_components,
+                                         method=self.method,
+                                         random_state=self.random_state)
         self.ica.fit(raw, verbose=True)
 
     def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
@@ -81,18 +89,20 @@ class CleaningData():
     bad_annotations: list = field(default_factory=list, repr=False)
     channels_ext: str = 'badChannels.tsv'
     segments_ext: str = 'badSegments.csv'
-    
+
     @staticmethod
     def step():
         return "cleaning"
 
     def _get_fpath(self, dtype: str):
         assert dtype in [
-            'channels', 'segments'], "dataType can only have values from ['channels', 'segments']"
+            'channels', 'segments'
+        ], "dataType can only have values from ['channels', 'segments']"
         bids_path = self.bids_path
         etx = self.channels_ext if dtype == 'channels' else self.segments_ext
-        bad_fname = os.path.join(bids_path.directory, bids_path.basename.removesuffix(
-            bids_path.suffix) + etx)
+        bad_fname = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + etx)
         assert isfile(bad_fname), "Bad {} file not found!".format(dtype)
         return bad_fname
 
@@ -117,7 +127,9 @@ class CleaningData():
         raw.info['bads'] = [raw.ch_names[idx] for idx in self.bad_channels]
         if interpolate:
             raw.interpolate_bads()
-        raw.annotations.append(self.bad_annotations.onset, self.bad_annotations.duration, self.bad_annotations.description)
+        raw.annotations.append(self.bad_annotations.onset,
+                               self.bad_annotations.duration,
+                               self.bad_annotations.description)
 
 
 @dataclass
@@ -129,11 +141,13 @@ class PrecomputedICA(BaseICA):
     ica: mne.preprocessing.ica = field(init=False)
     exclude: list[int] = field(default_factory=list)
 
-    def _load_bad_components(self, badComponents_fname: str, delimiter: str = '\t') -> np.ndarray:
-        assert isfile(
-            badComponents_fname), "ICA Bad Components file not found!"
-        bad_components = np.loadtxt(
-            badComponents_fname, delimiter=delimiter, dtype='float')
+    def _load_bad_components(self,
+                             badComponents_fname: str,
+                             delimiter: str = '\t') -> np.ndarray:
+        assert isfile(badComponents_fname), "ICA Bad Components file not found!"
+        bad_components = np.loadtxt(badComponents_fname,
+                                    delimiter=delimiter,
+                                    dtype='float')
         # for zero indexing
         bad_components -= 1
         # for cases when we have only one component in the file
@@ -145,11 +159,14 @@ class PrecomputedICA(BaseICA):
 
     def compute_ica(self, raw: mne.io.Raw = None):
         bids_path = self.bids_path
-        ica_file = os.path.join(bids_path.directory, bids_path.basename.removesuffix(
-            bids_path.suffix) + self.ica_ext)
+        ica_file = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + self.ica_ext)
         self.ica = self._load_ica(ica_file)
-        bad_comp = os.path.join(bids_path.directory, bids_path.basename.removesuffix(
-            bids_path.suffix) + self.badComponent_ext)
+        bad_comp = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) +
+            self.badComponent_ext)
         self.exclude = self._load_bad_components(bad_comp)
 
     def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
@@ -175,14 +192,16 @@ class PrecomputedICA(BaseICA):
         from scipy import linalg
         eeg = mne.preprocessing.ica._check_load_mat(fname, None)
         info, eeg_montage, _ = mne.preprocessing.ica._get_info(eeg)
-        mne.pick_info(info, np.round(eeg['icachansind']).astype(int) - 1, copy=False)
+        mne.pick_info(info,
+                      np.round(eeg['icachansind']).astype(int) - 1,
+                      copy=False)
         info.set_montage(eeg_montage)
-        
 
         rank = eeg.icasphere.shape[0]
         n_components = eeg.icaweights.shape[0]
 
-        ica = mne.preprocessing.ica.ICA(method='imported_eeglab', n_components=n_components)
+        ica = mne.preprocessing.ica.ICA(method='imported_eeglab',
+                                        n_components=n_components)
 
         ica.current_fit = "eeglab"
         ica.ch_names = info["ch_names"]
@@ -209,7 +228,8 @@ class PrecomputedICA(BaseICA):
         use = eeg.icaweights @ eeg.icasphere
         use_check = linalg.pinv(eeg.icawinv)
         if not np.allclose(use, use_check, rtol=1e-6):
-            logging.warn('Mismatch between icawinv and icaweights @ icasphere from EEGLAB '
+            logging.warn(
+                'Mismatch between icawinv and icaweights @ icasphere from EEGLAB '
                 'possibly due to ICA component removal, assuming icawinv is '
                 'correct')
             use = use_check
