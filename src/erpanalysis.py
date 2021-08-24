@@ -31,6 +31,7 @@ class ERPAnalysis():
                        events_id: Dict,
                        set_default: bool = True,
                        **kwargs) -> Union[None, mne.Epochs]:
+        """Compute and Return the epochs """
         baseline = kwargs.pop('baseline', self.baseline)
         reject_by_annotation = kwargs.pop('reject_by_annotation',
                                           self.reject_by_annotation)
@@ -56,6 +57,7 @@ class ERPAnalysis():
     def get_peak_channel(self, trial: mne.Evoked, channel: str, tmin: float,
                          tmax: float,
                          mode: str) -> Tuple[str, float, float, float]:
+        """Return the peak amplitude and mean amplitude channel voltage"""
 
         trial = trial.pick(channel)
         data = trial.data
@@ -76,6 +78,7 @@ class ERPAnalysis():
                      offset: float,
                      channels: list[str],
                      mode: str = 'pos') -> pd.DataFrame:
+        """Computes and returns the ERP peak value"""
 
         assert type(self.epochs) != np.ndarray, "Run compute_epochs first!"
         if isinstance(self.epochs, list):
@@ -91,6 +94,7 @@ class ERPAnalysis():
 
     def _get_erp_df(self, epochs: mne.Epochs, stim: str, thypothesis: float,
                     offset: float, channels: list[str], mode: str):
+        """Calculate peak values based on given time 't' and offset values"""
         epochs.load_data()
         peak_values = {
             'channel': [],
@@ -122,7 +126,7 @@ class ERPAnalysis():
                 mode=mode)
             # to make sure that our logic is correct
             if _channel == channel:
-                #allow difference upto 2 µV and latency upto 5 milliseconds
+                # allow difference upto 2 µV and latency upto 5 milliseconds
                 assert round(abs(peak - _peak) *
                              1e6) < 2, "Incorrect peak calculation logic!"
                 assert round(abs(latency - _latency) *
@@ -151,7 +155,8 @@ class ERPAnalysis():
         return df
 
     def get_encoding_data(self, condition: str, channels: list[str]):
-        #reverse mapping of event_id from epochs
+        """Returns the encoded data"""
+        # reverse mapping of event_id from epochs
         inv_map = {v: k for k, v in self.epochs[condition].event_id.items()}
         event_names = [
             (i, inv_map[i]) for i in self.epochs[condition].events[:, -1]
@@ -164,5 +169,6 @@ class ERPAnalysis():
             df['condition'].append(name.split('/')[2])
             df['code'].append(code)
         for channel in channels:
-            df[channel] = self.epochs[condition].get_data(picks=[channel]).mean(axis=2).reshape(-1)
+            df[channel] = self.epochs[condition].get_data(picks=[channel]).mean(
+                axis=2).reshape(-1)
         return pd.DataFrame.from_dict(df)
