@@ -55,6 +55,14 @@ class Pipeline:
         logging.basicConfig(level=self.verbose)
         mne.set_log_level(verbose='ERROR')
         warnings.filterwarnings("ignore")
+        
+    def __str__(self) -> str:
+        info = ('The raw data for subject {} has {} time samples and {} channels.\n'.format(self.subject, self.raw.n_times, len(self.raw.ch_names)) 
+                + 'The last time sample is at {} seconds.'.format(self.raw.times[-1])
+                + 'The first few channel names are {}....\n'.format(', '.join(self.raw.ch_names[:5]))
+                + 'sample rate: {} Hz.\n'.format(self.raw.info['sfreq'])
+                + '%s channels x %s samples\n\n' % (len(self.raw), len(self.raw.times)))
+        return info
 
     def set_montage(self) -> None:
         montage_dir = os.path.join(os.path.dirname(mne.__file__), 'channels',

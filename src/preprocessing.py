@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from operator import sub
 
 import numpy as np
 from dataclasses import dataclass, field
@@ -241,3 +242,34 @@ class PrecomputedICA(BaseICA):
         ica._update_mixing_matrix()
         ica._update_ica_names()
         return ica
+    
+    
+class IO:
+    @staticmethod
+    def save_badSegments(sub_id: int, dir: str, annotations: dict):
+        import csv
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+        path = os.path.join(dir, 'sub_{}_badChannels.csv'.format(sub_id))
+        
+        with open(path, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter=',')
+            for ann in annotations:
+                if ann['description'].startswith('BAD_'):
+                    logging.info("'{}' goes from {} to {}".format(ann['onset'], ann['duration'], ann['description']))
+                    writer.writerow([ann['onset'], ann['duration'], ann['description']])
+                    
+    @staticmethod
+    def save_badChannels(sub_id: int, dir: str, channels:list[str]):
+        import csv
+        
+        if not os.path.isdir(dir):
+            os.makedirs(dir) 
+            
+        path = os.path.join(dir, 'sub_{}_badChannels.csv'.format(sub_id))
+        
+        with open(path, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile, delimiter=',')
+            for channel in channels:
+                writer.writerow([channel])
+
