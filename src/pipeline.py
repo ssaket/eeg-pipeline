@@ -17,6 +17,7 @@ import pandas as pd
 
 
 class P3:
+    """Helper class for P3 tasks"""
 
     @abstractmethod
     def EVENTS_MAPINGS() -> Tuple[dict, list[int], list[int]]:
@@ -55,16 +56,21 @@ class Pipeline:
         logging.basicConfig(level=self.verbose)
         mne.set_log_level(verbose='ERROR')
         warnings.filterwarnings("ignore")
-        
+
     def __str__(self) -> str:
-        info = ('The raw data for subject {} has {} time samples and {} channels.\n'.format(self.subject, self.raw.n_times, len(self.raw.ch_names)) 
-                + 'The last time sample is at {} seconds.'.format(self.raw.times[-1])
-                + 'The first few channel names are {}....\n'.format(', '.join(self.raw.ch_names[:5]))
-                + 'sample rate: {} Hz.\n'.format(self.raw.info['sfreq'])
-                + '%s channels x %s samples\n\n' % (len(self.raw), len(self.raw.times)))
+        info = (
+            'The raw data for subject {} has {} time samples and {} channels.\n'
+            .format(self.subject, self.raw.n_times, len(self.raw.ch_names)) +
+            'The last time sample is at {} seconds.'.format(self.raw.times[-1])
+            + 'The first few channel names are {}....\n'.format(', '.join(
+                self.raw.ch_names[:5])) +
+            'sample rate: {} Hz.\n'.format(self.raw.info['sfreq']) +
+            '%s channels x %s samples\n\n' %
+            (len(self.raw), len(self.raw.times)))
         return info
 
     def set_montage(self) -> None:
+        """Set the montage for EEG data"""
         montage_dir = os.path.join(os.path.dirname(mne.__file__), 'channels',
                                    'data', 'montages')
         logging.debug(sorted(os.listdir(montage_dir)))
@@ -78,6 +84,7 @@ class Pipeline:
         logging.info("Standard 1020 montage and EOG channels are set")
 
     def load_data(self, event_id: Union[Dict, str] = "auto") -> any:
+        """Load the mne raw data and find events and event ids from annotations"""
         logging.info("Loading Data")
         raw = read_raw_bids(bids_path=self.bids_path)
         self.subject = self.bids_path.subject
@@ -89,6 +96,7 @@ class Pipeline:
     def set_custom_events_mapping(self,
                                   mapping: Dict[int, str] = None,
                                   task: str = None) -> None:
+        """Custom mappings for the P3 task"""
         if task == 'P3':
             mapping, _, _ = P3.EVENTS_MAPINGS()
         assert mapping is not None, "Mapping is not defined! Please pass mapping as argument"
@@ -103,6 +111,7 @@ class Pipeline:
     def apply_resampling(self,
                          sampling_freq: int,
                          padding: str = 'auto') -> None:
+        """Apply resampling on the mne raw data"""
         logging.info("Applying resampling")
         self.raw, self.events = self.raw.resample(sampling_freq,
                                                   npad=padding,
@@ -110,23 +119,28 @@ class Pipeline:
 
     def apply_rereferencing(self, reference_channels: Union[List[str],
                                                             str]) -> None:
+        """Apply re-referencing on the channels present in mne raw object"""
         logging.info("Applying re-referencing")
         mne.io.set_eeg_reference(self.raw, ref_channels=reference_channels)
 
     def apply_cleaning(self, cleaner: CleaningData):
+        """Apply cleaning of bad segments and bad channels"""
         logging.info("Applying cleaning")
         cleaner.apply_cleaning(self.raw)
 
     def apply_filter(self, filter: BaseFilter) -> None:
+        """Apply filtering on raw data"""
         logging.info("Applying filtering")
         filter.apply_filter(self.raw)
 
     def apply_ica(self, ica: BaseICA) -> None:
+        """Apply ICA on the raw data"""
         logging.info("Applying ICA")
         ica.compute_ica(self.raw)
         ica.apply_ica(self.raw)
 
     def get_events_df(self, events_ext: str = 'events.tsv') -> pd.DataFrame:
+        """Returns Pandas dataframe containing the events from the BIDS path"""
         bids_path = self.bids_path
         fname = os.path.join(
             bids_path.directory,
@@ -135,6 +149,7 @@ class Pipeline:
         return pd.read_csv(fname, delimiter='\t')
 
     def compute_epochs(self, erp: any) -> mne.Epochs:
+        """Perform ERP epochs computation task"""
         return erp.compute_epochs(self.raw, self.events, self.event_ids)
 
     def compute_erp_peak(self,
@@ -143,10 +158,12 @@ class Pipeline:
                          thypo: float,
                          offset: float = 0.05,
                          channels: list[str] = []) -> pd.DataFrame:
+        """Perform ERP Peak computation task"""
         self.compute_epochs(erp)
         return erp.compute_peak(condition, thypo, offset, channels)
 
     def apply_decoder(self, decoder: EEGDecoder) -> Tuple:
+        """Perfrom Decoding Analysis"""
         svm_scores = decoder.run_svm_()
         # sliding_scores = decoder.run_sliding_() somehow doesnot work!
         decoding_score = svm_scores
@@ -154,6 +171,7 @@ class Pipeline:
         return decoding_score
 
     def _parallel_process_raws(self, pipeline) -> mne.io.Raw:
+        """Perform preprocessig steps on list of raws using multiprocessing"""
         pipeline.load_data()
         pipeline.set_montage()
         pipeline.make_pipeline([
@@ -167,6 +185,7 @@ class Pipeline:
     def load_multiple_subjects(self,
                                n_subjects: int = 40,
                                preload: bool = False) -> None:
+        """Load subjects into current mne raw object"""
 
         curr_sub = [int(self.bids_path.subject)]
         subjects = set(range(1, n_subjects + 1)) - set(curr_sub)
@@ -191,6 +210,7 @@ class Pipeline:
         self.set_montage()
 
     def apply(self, step: list) -> None:
+        """Find the step to apply"""
         if isinstance(step, tuple):
             step_name = step[0]
             step = step[1]
@@ -216,6 +236,7 @@ class Pipeline:
             logging.error("Invalid pipeline operation!")
 
     def make_pipeline(self, steps: list) -> None:
+        """Perform the list of steps on the current mne raw object"""
         logging.info(
             "*" * 5 +
             "Proceesing for subject: {}".format(self.bids_path.subject) +
@@ -227,6 +248,7 @@ class Pipeline:
 
 @dataclass
 class MultiPipeline():
+    """Performs pipeline operations on list of pipelines"""
     bids_root: str
     verbose: int = logging.ERROR
     subjects: list[str] = field(init=False, default=None)
@@ -249,29 +271,37 @@ class MultiPipeline():
             bids_path.copy().update(subject=sub.split('-')[-1])
             for sub in self.subjects
         ]
-        
+
         self.pipelines = [
             Pipeline(bids_path=path, verbose=logging.ERROR)
             for path in self.bids_paths
         ]
-        
+
         self.pipelines.sort(key=lambda x: int(x.bids_path.subject))
 
     def _start_preprocessing(self, pipeline) -> list[Pipeline]:
+        """
+        Helper function to parallelize the preprocessing steps.
+        
+        Returns list of Pipelines having preprocessed data, In future, steps should be passed as parameter.
+        
+        """
         pipeline.load_data()
         pipeline.set_custom_events_mapping(task='P3')
         pipeline.set_montage()
         steps = [
             SimpleMNEFilter(0.5, 50, 'firwin'),
             CleaningData(pipeline.bids_path),
-            PrecomputedICA(pipeline.bids_path), 
-            ('reference', ['P9', 'P10']),
+            PrecomputedICA(pipeline.bids_path), ('reference', ['P9', 'P10']),
             ('resample', 256)
         ]
         pipeline.make_pipeline(steps)
         return pipeline
 
     def start_erp_analysis(self, erpanalysis, jobs: int = 6):
+        """
+        Performs ERP Analysis on Pipelines
+        """
         pipelines = self.pipelines
         with Pool(jobs) as p:
             pipelines = list(
@@ -284,14 +314,22 @@ class MultiPipeline():
         return erpanalysis
 
     def start_encoding_analysis(self, erp: ERPAnalysis, encoder: Encoder):
+        """
+        Performs Encoding Analysis on Pipelines
+        """
         assert erp.all_subjects, 'You have to run erp analysis first'
         for epoch in erp.epochs:
             encoder.fit(epoch)
 
     def start_preprocessing(self, jobs: int = 6) -> list[Pipeline]:
+        """
+        Performs perprocessing on a list of pipelines.
         
+        Pipelines are created by the list of BIDS paths in the BIDS root directory
+        """
+
         pipelines = self.pipelines
-        
+
         with Pool(jobs) as p:
             pipelines = list(
                 tqdm(p.imap(self._start_preprocessing, pipelines),

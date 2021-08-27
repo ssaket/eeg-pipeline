@@ -177,6 +177,7 @@ class PrecomputedICA(BaseICA):
         else:
             self.ica.apply(raw)
 
+    # taken from exercise
     def sp_read_ica_eeglab(self, fname, *, verbose=None):
         """Load ICA information saved in an EEGLAB .set file.
             Parameters
@@ -242,34 +243,39 @@ class PrecomputedICA(BaseICA):
         ica._update_mixing_matrix()
         ica._update_ica_names()
         return ica
-    
-    
+
+
 class IO:
+    """Class for performing file IO operations"""
+
     @staticmethod
     def save_badSegments(sub_id: int, dir: str, annotations: dict):
+        """Save the bad annotated segments in the raw data"""
         import csv
         if not os.path.isdir(dir):
             os.makedirs(dir)
         path = os.path.join(dir, 'sub_{}_badChannels.csv'.format(sub_id))
-        
+
         with open(path, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
             for ann in annotations:
                 if ann['description'].startswith('BAD_'):
-                    logging.info("'{}' goes from {} to {}".format(ann['onset'], ann['duration'], ann['description']))
-                    writer.writerow([ann['onset'], ann['duration'], ann['description']])
-                    
+                    logging.info("'{}' goes from {} to {}".format(
+                        ann['onset'], ann['duration'], ann['description']))
+                    writer.writerow(
+                        [ann['onset'], ann['duration'], ann['description']])
+
     @staticmethod
-    def save_badChannels(sub_id: int, dir: str, channels:list[str]):
+    def save_badChannels(sub_id: int, dir: str, channels: list[str]):
+        """Save the bad channles in the raw data"""
         import csv
-        
+
         if not os.path.isdir(dir):
-            os.makedirs(dir) 
-            
+            os.makedirs(dir)
+
         path = os.path.join(dir, 'sub_{}_badChannels.csv'.format(sub_id))
-        
+
         with open(path, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
             for channel in channels:
                 writer.writerow([channel])
-

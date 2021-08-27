@@ -174,6 +174,7 @@ class EEGDecoder():
 
     def _equalize_samples(self, data: np.ndarray,
                           labels: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """Helper funciton to equalize the data and labels"""
         labels_freq = np.random.choice(
             np.where(labels == 2)[0], len(np.where(labels == 1)[0]))
         labels_rare = np.where(labels == 1)[0]
@@ -208,6 +209,7 @@ class EEGDecoder():
 
     def get_all_stim(self,
                      equalize_labels_count: bool = False) -> Dict[str, Any]:
+        """Returns dictionary of epochs, data, labels, and balanced training data"""
 
         epoch_A = self.epochs['stimulus/A'].copy()
         epoch_B = self.epochs['stimulus/B'].copy()

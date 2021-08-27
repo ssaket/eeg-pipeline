@@ -57,7 +57,11 @@ class ERPAnalysis():
     def get_peak_channel(self, trial: mne.Evoked, channel: str, tmin: float,
                          tmax: float,
                          mode: str) -> Tuple[str, float, float, float]:
-        """Return the peak amplitude and mean amplitude channel voltage"""
+        """
+        Return the peak amplitude and mean amplitude channel voltage
+        
+        The mean is calculated by winsorize window removing 30% of the larger and smaller values in the data to minimize the influence of outliers.
+        """
 
         trial = trial.pick(channel)
         data = trial.data
@@ -78,7 +82,7 @@ class ERPAnalysis():
                      offset: float,
                      channels: list[str],
                      mode: str = 'pos') -> pd.DataFrame:
-        """Computes and returns the ERP peak value"""
+        """Computes and returns the ERP peak values as Pandas Dataframes"""
 
         assert type(self.epochs) != np.ndarray, "Run compute_epochs first!"
         if isinstance(self.epochs, list):
@@ -93,8 +97,9 @@ class ERPAnalysis():
                                     channels, mode)
 
     def _get_erp_df(self, epochs: mne.Epochs, stim: str, thypothesis: float,
-                    offset: float, channels: list[str], mode: str):
-        """Calculate peak values based on given time 't' and offset values"""
+                    offset: float, channels: list[str],
+                    mode: str) -> pd.DataFrame:
+        """ Helper function to calculate peak values based on given time 't' padded by the offset values """
         epochs.load_data()
         peak_values = {
             'channel': [],
@@ -153,22 +158,3 @@ class ERPAnalysis():
         df = pd.DataFrame.from_dict(peak_values)
         del peak_values
         return df
-
-    def get_encoding_data(self, condition: str, channels: list[str]):
-        """Returns the encoded data"""
-        # reverse mapping of event_id from epochs
-        inv_map = {v: k for k, v in self.epochs[condition].event_id.items()}
-        event_names = [
-            (i, inv_map[i]) for i in self.epochs[condition].events[:, -1]
-        ]
-        df = dict(epochs=[], stimulus=[], condition=[], code=[])
-        for i, item in enumerate(event_names):
-            code, name = item
-            df['epochs'].append(i)
-            df['stimulus'].append(name.split('/')[1])
-            df['condition'].append(name.split('/')[2])
-            df['code'].append(code)
-        for channel in channels:
-            df[channel] = self.epochs[condition].get_data(picks=[channel]).mean(
-                axis=2).reshape(-1)
-        return pd.DataFrame.from_dict(df)
