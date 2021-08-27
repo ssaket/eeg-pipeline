@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Tuple, Union
 import seaborn as sns
 import numpy as np
 import mne
+from sklearn.utils import multiclass
 
 
 @dataclass
@@ -125,6 +126,7 @@ class CrossTimePipelineDecoder(Classifier):
 @dataclass
 class FeatureTransformer(ABC):
     """Base Transformer"""
+
     @abstractmethod
     def transform() -> np.ndarray:
         pass
@@ -204,7 +206,8 @@ class EEGDecoder():
 
         return data, labels
 
-    def get_all_stim(self, equalize_labels_count: bool = False) -> Dict[str, Any]:
+    def get_all_stim(self,
+                     equalize_labels_count: bool = False) -> Dict[str, Any]:
 
         epoch_A = self.epochs['stimulus/A'].copy()
         epoch_B = self.epochs['stimulus/B'].copy()
@@ -330,13 +333,14 @@ class EEGDecoder():
 
         clf_svm = make_pipeline(Vectorizer(), StandardScaler(),
                                 svm.SVC(kernel='linear', C=1))
-        timeDecode = SlidingEstimator(clf_svm)
-        epochs = self.epochs.load_data().copy().resample(60)
+        timeDecode = SlidingEstimator(clf_svm, scoring='roc_auc', n_jobs=3)
+        epochs = self.epochs.load_data()
+        labels = self.labels_transform()
         scores = cross_val_multiscore(timeDecode,
                                       epochs.get_data(),
-                                      self.labels_transform(),
-                                      cv=StratifiedKFold(n_splits=5),
-                                      n_jobs=2)
+                                      labels,
+                                      cv=StratifiedKFold(5, True, 114),
+                                      n_jobs=6)
         return (epochs.times, scores)
 
 

@@ -157,9 +157,10 @@ def suite():
     # suite.addTest(DecodingAnalysisTestCase('test_sliding_window'))
     # suite.addTest(DecodingAnalysisTestCase('test_classify_over_time'))
     # suite.addTest(DecodingAnalysisTestCase('test_classify_all_stim'))
+    suite.addTest(MultiPipelineTestCase('test_erp_analysis'))
     # suite.addTest(MultiPipelineTestCase('test_erp_epochs'))
     # suite.addTest(MultiPipelineTestCase('decoding_across_time'))
-    suite.addTest(MultiPipelineTestCase('test_encoding_analysis'))
+    # suite.addTest(MultiPipelineTestCase('test_encoding_analysis'))
 
     return suite
 

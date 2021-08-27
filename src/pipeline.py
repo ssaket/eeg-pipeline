@@ -229,6 +229,9 @@ class Pipeline:
 class MultiPipeline():
     bids_root: str
     verbose: int = logging.ERROR
+    subjects: list[str] = field(init=False, default=None)
+    bids_paths: list[BIDSPath] = field(init=False)
+    pipelines: list[Pipeline] = field(init=False)
 
     def __post_init__(self) -> None:
         logging.basicConfig(level=self.verbose)
@@ -246,28 +249,33 @@ class MultiPipeline():
             bids_path.copy().update(subject=sub.split('-')[-1])
             for sub in self.subjects
         ]
+        
+        self.pipelines = [
+            Pipeline(bids_path=path, verbose=logging.ERROR)
+            for path in self.bids_paths
+        ]
+        
+        self.pipelines.sort(key=lambda x: int(x.bids_path.subject))
 
-    def start_preprocessing(self, pipeline) -> mne.io.Raw:
+    def _start_preprocessing(self, pipeline) -> list[Pipeline]:
         pipeline.load_data()
         pipeline.set_custom_events_mapping(task='P3')
         pipeline.set_montage()
         steps = [
             SimpleMNEFilter(0.5, 50, 'firwin'),
             CleaningData(pipeline.bids_path),
-            PrecomputedICA(pipeline.bids_path), ('reference', ['P9', 'P10']),
+            PrecomputedICA(pipeline.bids_path), 
+            ('reference', ['P9', 'P10']),
             ('resample', 256)
         ]
         pipeline.make_pipeline(steps)
         return pipeline
 
     def start_erp_analysis(self, erpanalysis, jobs: int = 6):
-        pipelines = [
-            Pipeline(bids_path=path, verbose=logging.ERROR)
-            for path in self.bids_paths
-        ]
+        pipelines = self.pipelines
         with Pool(jobs) as p:
             pipelines = list(
-                tqdm(p.imap(self.start_preprocessing, pipelines),
+                tqdm(p.imap(self._start_preprocessing, pipelines),
                      total=len(self.subjects)))
 
         for pipeline in pipelines:
@@ -280,34 +288,13 @@ class MultiPipeline():
         for epoch in erp.epochs:
             encoder.fit(epoch)
 
-    def _parallel_decoding(self, pipeline) -> mne.io.Raw:
-        pipeline.load_data()
-        pipeline.set_custom_events_mapping(task='P3')
-        pipeline.set_montage()
-        steps = [
-            SimpleMNEFilter(0.1, 50, 'firwin'),
-            CleaningData(pipeline.bids_path),
-            PrecomputedICA(pipeline.bids_path),
-            ('decoding',
-             EEGDecoder('stimulus', (-0.1, 0.8), (0.1, 0.7),
-                        pipeline.raw,
-                        baseline=(None, 0),
-                        reject_by_annotation=True,
-                        equalize_events=True))
-        ]
-
-        pipeline.make_pipeline(steps)
-        return pipeline
-
-    def start_decoding(self, jobs: int = 6):
-        pipelines = [
-            Pipeline(bids_path=path, verbose=logging.ERROR)
-            for path in self.bids_paths
-        ]
+    def start_preprocessing(self, jobs: int = 6) -> list[Pipeline]:
+        
+        pipelines = self.pipelines
+        
         with Pool(jobs) as p:
             pipelines = list(
-                tqdm(p.imap(self._parallel_decoding, pipelines),
+                tqdm(p.imap(self._start_preprocessing, pipelines),
                      total=len(self.subjects)))
 
-        # scores = [ pipeline.apply_decoder(decoder) for pipeline in pipelines]
         return pipelines
