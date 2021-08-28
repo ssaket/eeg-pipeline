@@ -73,13 +73,14 @@ class ERPAnalysis():
         if mode == 'abs':
             data = np.absolute(data)[0]
 
-        return (channel, trial.times[tmin_idx + np.argmax(data)], np.max(data),
-                np.mean(winsorize(data, limits=[0.3, 0.3])))
+        return (channel[np.argmax(data) // data.shape[1]],
+                trial.times[tmin_idx + (np.argmax(data) % data.shape[1])],
+                np.max(data), np.mean(winsorize(data, limits=[0.3, 0.3])))
 
     def compute_peak(self,
                      stim: str,
-                     thypothesis: float,
-                     offset: float,
+                     tmin: float,
+                     tmax: float,
                      channels: list[str],
                      mode: str = 'pos') -> pd.DataFrame:
         """Computes and returns the ERP peak values as Pandas Dataframes"""
@@ -89,15 +90,14 @@ class ERPAnalysis():
             erp_dfs = []
             for _i, epoch in enumerate(self.epochs):
                 erp_dfs.append(
-                    self._get_erp_df(epoch, stim, thypothesis, offset, channels,
-                                     mode))
+                    self._get_erp_df(epoch, stim, tmin, tmax, channels, mode))
             return erp_dfs
         else:
-            return self._get_erp_df(self.epochs, stim, thypothesis, offset,
-                                    channels, mode)
+            return self._get_erp_df(self.epochs, stim, tmin, tmax, channels,
+                                    mode)
 
-    def _get_erp_df(self, epochs: mne.Epochs, stim: str, thypothesis: float,
-                    offset: float, channels: list[str],
+    def _get_erp_df(self, epochs: mne.Epochs, stim: str, tmin: float,
+                    tmax: float, channels: list[str],
                     mode: str) -> pd.DataFrame:
         """ Helper function to calculate peak values based on given time 't' padded by the offset values """
         epochs.load_data()
@@ -114,21 +114,19 @@ class ERPAnalysis():
 
         for ix, trial in enumerate(_epochs.iter_evoked()):
 
-            _channel, _latency, _peak = trial.get_peak(
-                tmin=thypothesis - offset,
-                tmax=thypothesis + offset,
-                ch_type='eeg',
-                return_amplitude=True,
-                mode=mode)
+            _channel, _latency, _peak = trial.get_peak(tmin=tmin,
+                                                       tmax=tmax,
+                                                       ch_type='eeg',
+                                                       return_amplitude=True,
+                                                       mode=mode)
 
             # We are using because MNE does not support mean amplitude using time window
             # and neither channel selection
-            channel, latency, peak, mamp = self.get_peak_channel(
-                trial,
-                channels,
-                thypothesis - offset,
-                thypothesis + offset,
-                mode=mode)
+            channel, latency, peak, mamp = self.get_peak_channel(trial,
+                                                                 channels,
+                                                                 tmin,
+                                                                 tmax,
+                                                                 mode=mode)
             # to make sure that our logic is correct
             if _channel == channel:
                 # allow difference upto 2 µV and latency upto 5 milliseconds

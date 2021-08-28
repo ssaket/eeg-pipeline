@@ -60,8 +60,7 @@ class PipelineTestCase(unittest.TestCase):
                                  self.pipeline.event_ids,
                                  baseline=(0, None),
                                  reject_by_annotation=True)
-        peak = erp_clean.compute_peak('freq', 0.3, 0.1, ['Pz', 'CPz'])
-        erp_clean.get_encoding_data()
+        peak = erp_clean.compute_peak('freq', 0.3, 0.6, ['Pz', 'CPz'])
         print(peak)
 
     def test_all_subject(self):
@@ -89,8 +88,8 @@ class MultiPipelineTestCase(unittest.TestCase):
         self.multi_pipeline.start_encoding_analysis(self.erp, encoder)
 
     def test_erp_epochs(self):
-        self.erp.compute_peak('rare', 0.3, 0.1, ['Pz', 'CPz'], 'pos')
-        self.erp.compute_peak('freq', 0.3, 0.1, ['Cz'], 'pos')
+        self.erp.compute_peak('rare', 0.3, 0.6, ['Pz', 'CPz'], 'pos')
+        self.erp.compute_peak('freq', 0.3, 0.6, ['Cz'], 'pos')
 
     def decoding_across_time(self):
         self.multi_pipeline.start_decoding()
@@ -150,14 +149,14 @@ class DecodingAnalysisTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     # suite.addTest(PipelineTestCase('test_preprocessing'))
-    # suite.addTest(PipelineTestCase('test_erp_peaks'))
+    suite.addTest(PipelineTestCase('test_erp_peaks'))
     # suite.addTest(PipelineTestCase('test_all_subject'))
     # suite.addTest(DecodingAnalysisTestCase('test_feature_transform'))
     # suite.addTest(DecodingAnalysisTestCase('test_get_train_from_channels'))
     # suite.addTest(DecodingAnalysisTestCase('test_sliding_window'))
     # suite.addTest(DecodingAnalysisTestCase('test_classify_over_time'))
     # suite.addTest(DecodingAnalysisTestCase('test_classify_all_stim'))
-    suite.addTest(MultiPipelineTestCase('test_erp_analysis'))
+    # suite.addTest(MultiPipelineTestCase('test_erp_analysis'))
     # suite.addTest(MultiPipelineTestCase('test_erp_epochs'))
     # suite.addTest(MultiPipelineTestCase('decoding_across_time'))
     # suite.addTest(MultiPipelineTestCase('test_encoding_analysis'))
