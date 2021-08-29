@@ -48,9 +48,28 @@ Use the environment.yml file to create a virtual env and install [mne-bids](http
 
 - `erpanalysis.ipynb`: we disscuss on peak to peak amplitude, diffrence between conditions and stimulus/
 
-- `encoding.ipynb`: we discuss and analysis on how to fit a mass univariate model on EEG data.
+- `encoding.ipynb`: we discuss and analyse how to fit a mass univariate model on EEG data.
 
-- `decoding.ipynb`: we disscuss and analysis, classification scores based on Sensor-space decoding: decoding over time. We also discuss decoding in sensor space data.
+- `decoding.ipynb`: we disscuss and analyse classification scores based on Sensor-space decoding: decoding over time. We also discuss decoding in sensor space data.
+
+## Structure
+
+```shell
++-- cleaning
+|   +-- badChannels
+        +-- ..files containing bad channels for 3-subjects
+|   +-- badSegments
+        +-- ..files containing bad segments for 3-subjects
++-- data
+|   +-- sub_1
+|   +-- ..
++-- docs
+|   +-- ..
++-- images
+|   +-- ...
+|   +-- plots of discussions
++-- src
+```
 
 ## References
 
@@ -62,4 +81,4 @@ Volume 225,
 117465,
 ISSN 1053-8119
 
-[2] EEG Preprocessing and analysis course, https://github.com/s-ccs/course_eeg_SS2021
+[2] EEG Preprocessing and analysis course, <https://github.com/s-ccs/course_eeg_SS2021>
