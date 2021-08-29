@@ -302,9 +302,7 @@ class EEGDecoder():
             for key in _epochs.event_id
             if int(key.split('/')[-1]) in rare
         ]
-        rare_stims = np.array([_epochs.events[key] for key in wanted_keys])
-        rare_stims = rare_stims[:, -1]
-        labels = np.where(np.isin(_labels, rare_stims), 1, 2)
+        labels = np.where(np.isin(_labels, wanted_keys), 1, 2)
         return labels
 
     def run_svm_(self) -> Tuple[object, object]:
