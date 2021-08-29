@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>src.erpanalysis API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.erpanalysis</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from dataclasses import dataclass, field
+from typing import Dict, Tuple, Optional, Union
+
+import numpy as np
+import pandas as pd
+import mne
+import logging
+from scipy.stats.mstats import winsorize
+
+
+@dataclass
+class ERPAnalysis():
+    &#34;&#34;&#34;ERP Peak Analysis&#34;&#34;&#34;
+    tmin: float
+    tmax: float
+    baseline: Optional[Tuple[Optional[int], int]] = None
+    reject_by_annotation: bool = False
+    all_subjects: bool = False
+    epochs: Union[mne.Epochs, list[mne.Epochs]] = field(init=False,
+                                                        repr=False,
+                                                        default_factory=list)
+    reject: Dict = field(init=False, default_factory=dict)
+
+    @staticmethod
+    def step():
+        return &#34;erp&#34;
+
+    def compute_epochs(self,
+                       raw: mne.io.Raw,
+                       events: np.ndarray,
+                       events_id: Dict,
+                       set_default: bool = True,
+                       **kwargs) -&gt; Union[None, mne.Epochs]:
+        &#34;&#34;&#34;Compute and Return the epochs &#34;&#34;&#34;
+        baseline = kwargs.pop(&#39;baseline&#39;, self.baseline)
+        reject_by_annotation = kwargs.pop(&#39;reject_by_annotation&#39;,
+                                          self.reject_by_annotation)
+        reject = kwargs.pop(&#39;reject&#39;, self.reject)
+        epochs = mne.Epochs(raw,
+                            events=events,
+                            event_id=events_id,
+                            tmin=self.tmin,
+                            tmax=self.tmax,
+                            baseline=baseline,
+                            reject_by_annotation=reject_by_annotation,
+                            reject=reject,
+                            preload=True)
+
+        if self.all_subjects:
+            self.epochs.append(epochs)
+            return
+        if set_default:
+            self.epochs = epochs
+
+        return epochs
+
+    def get_peak_channel(self, trial: mne.Evoked, channel: str, tmin: float,
+                         tmax: float,
+                         mode: str) -&gt; Tuple[str, float, float, float]:
+        &#34;&#34;&#34;
+        Return the peak amplitude and mean amplitude channel voltage
+        
+        The mean is calculated by winsorize window removing 30% of the larger and smaller values in the data to minimize the influence of outliers.
+        &#34;&#34;&#34;
+
+        trial = trial.pick(channel)
+        data = trial.data
+
+        tmin_idx, tmax_idx = trial.time_as_index([tmin, tmax],
+                                                 use_rounding=True)
+        data = data[:, tmin_idx:tmax_idx]
+
+        if mode == &#39;abs&#39;:
+            data = np.absolute(data)[0]
+
+        return (channel[np.argmax(data) // data.shape[1]],
+                trial.times[tmin_idx + (np.argmax(data) % data.shape[1])],
+                np.max(data), np.mean(winsorize(data, limits=[0.3, 0.3])))
+
+    def compute_peak(self,
+                     stim: str,
+                     tmin: float,
+                     tmax: float,
+                     channels: list[str],
+                     mode: str = &#39;pos&#39;) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Computes and returns the ERP peak values as Pandas Dataframes&#34;&#34;&#34;
+
+        assert type(self.epochs) != np.ndarray, &#34;Run compute_epochs first!&#34;
+        if isinstance(self.epochs, list):
+            erp_dfs = []
+            for _i, epoch in enumerate(self.epochs):
+                erp_dfs.append(
+                    self._get_erp_df(epoch, stim, tmin, tmax, channels, mode))
+            return erp_dfs
+        else:
+            return self._get_erp_df(self.epochs, stim, tmin, tmax, channels,
+                                    mode)
+
+    def _get_erp_df(self, epochs: mne.Epochs, stim: str, tmin: float,
+                    tmax: float, channels: list[str],
+                    mode: str) -&gt; pd.DataFrame:
+        &#34;&#34;&#34; Helper function to calculate peak values based on given time &#39;t&#39; padded by the offset values &#34;&#34;&#34;
+        epochs.load_data()
+        peak_values = {
+            &#39;channel&#39;: [],
+            &#39;peak_amp&#39;: [],
+            &#39;mean_amp&#39;: [],
+            &#39;latency&#39;: [],
+            &#39;trial&#39;: [],
+            &#39;stimulus&#39;: [],
+            &#39;condition&#39;: []
+        }
+        _epochs: mne.Epochs = epochs[stim] if stim else epochs
+
+        for ix, trial in enumerate(_epochs.iter_evoked()):
+
+            _channel, _latency, _peak = trial.get_peak(tmin=tmin,
+                                                       tmax=tmax,
+                                                       ch_type=&#39;eeg&#39;,
+                                                       return_amplitude=True,
+                                                       mode=mode)
+
+            # We are using because MNE does not support mean amplitude using time window
+            # and neither channel selection
+            channel, latency, peak, mamp = self.get_peak_channel(trial,
+                                                                 channels,
+                                                                 tmin,
+                                                                 tmax,
+                                                                 mode=mode)
+            # to make sure that our logic is correct
+            if _channel == channel:
+                # allow difference upto 2 µV and latency upto 5 milliseconds
+                assert round(abs(peak - _peak) *
+                             1e6) &lt; 2, &#34;Incorrect peak calculation logic!&#34;
+                assert round(abs(latency - _latency) *
+                             1e3) &lt; 5, &#34;Incorrect latency calculation logic!&#34;
+
+            latency = int(round(latency * 1e3))  # convert to milliseconds
+            peak = int(round(peak * 1e6))  # convert to µV
+            mamp = int(round(mamp * 1e6))  # convert to µV
+            peak_values[&#39;channel&#39;].append(channel)
+            peak_values[&#39;peak_amp&#39;].append(peak)
+            peak_values[&#39;mean_amp&#39;].append(mamp)
+            peak_values[&#39;latency&#39;].append(latency)
+            peak_values[&#39;trial&#39;].append(ix)
+            if len(stim.split(&#39;/&#39;)) &gt; 1:
+                peak_values[&#39;stimulus&#39;].append(stim.split(&#39;/&#39;)[0])
+                peak_values[&#39;condition&#39;].append(stim.split(&#39;/&#39;)[1])
+            else:
+                peak_values[&#39;stimulus&#39;].append(&#39;stimulus&#39;)
+                peak_values[&#39;condition&#39;].append(stim)
+
+            logging.debug(
+                &#39;Trial {}: peak of {} µV and mean of {} µV at {} ms in channel {}&#39;
+                .format(ix, peak, mamp, latency, channel))
+        df = pd.DataFrame.from_dict(peak_values)
+        del peak_values
+        return df</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.erpanalysis.ERPAnalysis"><code class="flex name class">
+<span>class <span class="ident">ERPAnalysis</span></span>
+<span>(</span><span>tmin: float, tmax: float, baseline: Optional[Tuple[Optional[int], int]] = None, reject_by_annotation: bool = False, all_subjects: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ERP Peak Analysis</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ERPAnalysis():
+    &#34;&#34;&#34;ERP Peak Analysis&#34;&#34;&#34;
+    tmin: float
+    tmax: float
+    baseline: Optional[Tuple[Optional[int], int]] = None
+    reject_by_annotation: bool = False
+    all_subjects: bool = False
+    epochs: Union[mne.Epochs, list[mne.Epochs]] = field(init=False,
+                                                        repr=False,
+                                                        default_factory=list)
+    reject: Dict = field(init=False, default_factory=dict)
+
+    @staticmethod
+    def step():
+        return &#34;erp&#34;
+
+    def compute_epochs(self,
+                       raw: mne.io.Raw,
+                       events: np.ndarray,
+                       events_id: Dict,
+                       set_default: bool = True,
+                       **kwargs) -&gt; Union[None, mne.Epochs]:
+        &#34;&#34;&#34;Compute and Return the epochs &#34;&#34;&#34;
+        baseline = kwargs.pop(&#39;baseline&#39;, self.baseline)
+        reject_by_annotation = kwargs.pop(&#39;reject_by_annotation&#39;,
+                                          self.reject_by_annotation)
+        reject = kwargs.pop(&#39;reject&#39;, self.reject)
+        epochs = mne.Epochs(raw,
+                            events=events,
+                            event_id=events_id,
+                            tmin=self.tmin,
+                            tmax=self.tmax,
+                            baseline=baseline,
+                            reject_by_annotation=reject_by_annotation,
+                            reject=reject,
+                            preload=True)
+
+        if self.all_subjects:
+            self.epochs.append(epochs)
+            return
+        if set_default:
+            self.epochs = epochs
+
+        return epochs
+
+    def get_peak_channel(self, trial: mne.Evoked, channel: str, tmin: float,
+                         tmax: float,
+                         mode: str) -&gt; Tuple[str, float, float, float]:
+        &#34;&#34;&#34;
+        Return the peak amplitude and mean amplitude channel voltage
+        
+        The mean is calculated by winsorize window removing 30% of the larger and smaller values in the data to minimize the influence of outliers.
+        &#34;&#34;&#34;
+
+        trial = trial.pick(channel)
+        data = trial.data
+
+        tmin_idx, tmax_idx = trial.time_as_index([tmin, tmax],
+                                                 use_rounding=True)
+        data = data[:, tmin_idx:tmax_idx]
+
+        if mode == &#39;abs&#39;:
+            data = np.absolute(data)[0]
+
+        return (channel[np.argmax(data) // data.shape[1]],
+                trial.times[tmin_idx + (np.argmax(data) % data.shape[1])],
+                np.max(data), np.mean(winsorize(data, limits=[0.3, 0.3])))
+
+    def compute_peak(self,
+                     stim: str,
+                     tmin: float,
+                     tmax: float,
+                     channels: list[str],
+                     mode: str = &#39;pos&#39;) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Computes and returns the ERP peak values as Pandas Dataframes&#34;&#34;&#34;
+
+        assert type(self.epochs) != np.ndarray, &#34;Run compute_epochs first!&#34;
+        if isinstance(self.epochs, list):
+            erp_dfs = []
+            for _i, epoch in enumerate(self.epochs):
+                erp_dfs.append(
+                    self._get_erp_df(epoch, stim, tmin, tmax, channels, mode))
+            return erp_dfs
+        else:
+            return self._get_erp_df(self.epochs, stim, tmin, tmax, channels,
+                                    mode)
+
+    def _get_erp_df(self, epochs: mne.Epochs, stim: str, tmin: float,
+                    tmax: float, channels: list[str],
+                    mode: str) -&gt; pd.DataFrame:
+        &#34;&#34;&#34; Helper function to calculate peak values based on given time &#39;t&#39; padded by the offset values &#34;&#34;&#34;
+        epochs.load_data()
+        peak_values = {
+            &#39;channel&#39;: [],
+            &#39;peak_amp&#39;: [],
+            &#39;mean_amp&#39;: [],
+            &#39;latency&#39;: [],
+            &#39;trial&#39;: [],
+            &#39;stimulus&#39;: [],
+            &#39;condition&#39;: []
+        }
+        _epochs: mne.Epochs = epochs[stim] if stim else epochs
+
+        for ix, trial in enumerate(_epochs.iter_evoked()):
+
+            _channel, _latency, _peak = trial.get_peak(tmin=tmin,
+                                                       tmax=tmax,
+                                                       ch_type=&#39;eeg&#39;,
+                                                       return_amplitude=True,
+                                                       mode=mode)
+
+            # We are using because MNE does not support mean amplitude using time window
+            # and neither channel selection
+            channel, latency, peak, mamp = self.get_peak_channel(trial,
+                                                                 channels,
+                                                                 tmin,
+                                                                 tmax,
+                                                                 mode=mode)
+            # to make sure that our logic is correct
+            if _channel == channel:
+                # allow difference upto 2 µV and latency upto 5 milliseconds
+                assert round(abs(peak - _peak) *
+                             1e6) &lt; 2, &#34;Incorrect peak calculation logic!&#34;
+                assert round(abs(latency - _latency) *
+                             1e3) &lt; 5, &#34;Incorrect latency calculation logic!&#34;
+
+            latency = int(round(latency * 1e3))  # convert to milliseconds
+            peak = int(round(peak * 1e6))  # convert to µV
+            mamp = int(round(mamp * 1e6))  # convert to µV
+            peak_values[&#39;channel&#39;].append(channel)
+            peak_values[&#39;peak_amp&#39;].append(peak)
+            peak_values[&#39;mean_amp&#39;].append(mamp)
+            peak_values[&#39;latency&#39;].append(latency)
+            peak_values[&#39;trial&#39;].append(ix)
+            if len(stim.split(&#39;/&#39;)) &gt; 1:
+                peak_values[&#39;stimulus&#39;].append(stim.split(&#39;/&#39;)[0])
+                peak_values[&#39;condition&#39;].append(stim.split(&#39;/&#39;)[1])
+            else:
+                peak_values[&#39;stimulus&#39;].append(&#39;stimulus&#39;)
+                peak_values[&#39;condition&#39;].append(stim)
+
+            logging.debug(
+                &#39;Trial {}: peak of {} µV and mean of {} µV at {} ms in channel {}&#39;
+                .format(ix, peak, mamp, latency, channel))
+        df = pd.DataFrame.from_dict(peak_values)
+        del peak_values
+        return df</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.erpanalysis.ERPAnalysis.all_subjects"><code class="name">var <span class="ident">all_subjects</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.baseline"><code class="name">var <span class="ident">baseline</span> : Optional[Tuple[Optional[int], int]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.epochs"><code class="name">var <span class="ident">epochs</span> : Union[mne.epochs.Epochs, list[mne.epochs.Epochs]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.reject"><code class="name">var <span class="ident">reject</span> : Dict</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.reject_by_annotation"><code class="name">var <span class="ident">reject_by_annotation</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.tmax"><code class="name">var <span class="ident">tmax</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.tmin"><code class="name">var <span class="ident">tmin</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.erpanalysis.ERPAnalysis.step"><code class="name flex">
+<span>def <span class="ident">step</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def step():
+    return &#34;erp&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.erpanalysis.ERPAnalysis.compute_epochs"><code class="name flex">
+<span>def <span class="ident">compute_epochs</span></span>(<span>self, raw: mne.io.fiff.raw.Raw, events: numpy.ndarray, events_id: Dict, set_default: bool = True, **kwargs) ‑> Optional[None]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute and Return the epochs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_epochs(self,
+                   raw: mne.io.Raw,
+                   events: np.ndarray,
+                   events_id: Dict,
+                   set_default: bool = True,
+                   **kwargs) -&gt; Union[None, mne.Epochs]:
+    &#34;&#34;&#34;Compute and Return the epochs &#34;&#34;&#34;
+    baseline = kwargs.pop(&#39;baseline&#39;, self.baseline)
+    reject_by_annotation = kwargs.pop(&#39;reject_by_annotation&#39;,
+                                      self.reject_by_annotation)
+    reject = kwargs.pop(&#39;reject&#39;, self.reject)
+    epochs = mne.Epochs(raw,
+                        events=events,
+                        event_id=events_id,
+                        tmin=self.tmin,
+                        tmax=self.tmax,
+                        baseline=baseline,
+                        reject_by_annotation=reject_by_annotation,
+                        reject=reject,
+                        preload=True)
+
+    if self.all_subjects:
+        self.epochs.append(epochs)
+        return
+    if set_default:
+        self.epochs = epochs
+
+    return epochs</code></pre>
+</details>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.compute_peak"><code class="name flex">
+<span>def <span class="ident">compute_peak</span></span>(<span>self, stim: str, tmin: float, tmax: float, channels: list, mode: str = 'pos') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the ERP peak values as Pandas Dataframes</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_peak(self,
+                 stim: str,
+                 tmin: float,
+                 tmax: float,
+                 channels: list[str],
+                 mode: str = &#39;pos&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Computes and returns the ERP peak values as Pandas Dataframes&#34;&#34;&#34;
+
+    assert type(self.epochs) != np.ndarray, &#34;Run compute_epochs first!&#34;
+    if isinstance(self.epochs, list):
+        erp_dfs = []
+        for _i, epoch in enumerate(self.epochs):
+            erp_dfs.append(
+                self._get_erp_df(epoch, stim, tmin, tmax, channels, mode))
+        return erp_dfs
+    else:
+        return self._get_erp_df(self.epochs, stim, tmin, tmax, channels,
+                                mode)</code></pre>
+</details>
+</dd>
+<dt id="src.erpanalysis.ERPAnalysis.get_peak_channel"><code class="name flex">
+<span>def <span class="ident">get_peak_channel</span></span>(<span>self, trial: mne.evoked.Evoked, channel: str, tmin: float, tmax: float, mode: str) ‑> Tuple[str, float, float, float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the peak amplitude and mean amplitude channel voltage</p>
+<p>The mean is calculated by winsorize window removing 30% of the larger and smaller values in the data to minimize the influence of outliers.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_peak_channel(self, trial: mne.Evoked, channel: str, tmin: float,
+                     tmax: float,
+                     mode: str) -&gt; Tuple[str, float, float, float]:
+    &#34;&#34;&#34;
+    Return the peak amplitude and mean amplitude channel voltage
+    
+    The mean is calculated by winsorize window removing 30% of the larger and smaller values in the data to minimize the influence of outliers.
+    &#34;&#34;&#34;
+
+    trial = trial.pick(channel)
+    data = trial.data
+
+    tmin_idx, tmax_idx = trial.time_as_index([tmin, tmax],
+                                             use_rounding=True)
+    data = data[:, tmin_idx:tmax_idx]
+
+    if mode == &#39;abs&#39;:
+        data = np.absolute(data)[0]
+
+    return (channel[np.argmax(data) // data.shape[1]],
+            trial.times[tmin_idx + (np.argmax(data) % data.shape[1])],
+            np.max(data), np.mean(winsorize(data, limits=[0.3, 0.3])))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src" href="index.html">src</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.erpanalysis.ERPAnalysis" href="#src.erpanalysis.ERPAnalysis">ERPAnalysis</a></code></h4>
+<ul class="">
+<li><code><a title="src.erpanalysis.ERPAnalysis.all_subjects" href="#src.erpanalysis.ERPAnalysis.all_subjects">all_subjects</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.baseline" href="#src.erpanalysis.ERPAnalysis.baseline">baseline</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.compute_epochs" href="#src.erpanalysis.ERPAnalysis.compute_epochs">compute_epochs</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.compute_peak" href="#src.erpanalysis.ERPAnalysis.compute_peak">compute_peak</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.epochs" href="#src.erpanalysis.ERPAnalysis.epochs">epochs</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.get_peak_channel" href="#src.erpanalysis.ERPAnalysis.get_peak_channel">get_peak_channel</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.reject" href="#src.erpanalysis.ERPAnalysis.reject">reject</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.reject_by_annotation" href="#src.erpanalysis.ERPAnalysis.reject_by_annotation">reject_by_annotation</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.step" href="#src.erpanalysis.ERPAnalysis.step">step</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.tmax" href="#src.erpanalysis.ERPAnalysis.tmax">tmax</a></code></li>
+<li><code><a title="src.erpanalysis.ERPAnalysis.tmin" href="#src.erpanalysis.ERPAnalysis.tmin">tmin</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

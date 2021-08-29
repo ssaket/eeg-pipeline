@@ -1,0 +1,1235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>src.preprocessing API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.preprocessing</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from abc import ABC, abstractmethod
+from operator import sub
+
+import numpy as np
+from dataclasses import dataclass, field
+from genericpath import isfile
+from typing import Optional
+
+import mne
+import os
+import logging
+
+from mne_bids.path import BIDSPath
+
+
+@dataclass
+class BaseFilter(ABC):
+
+    @abstractmethod
+    def apply_filter():
+        pass
+
+    @staticmethod
+    def step():
+        return &#34;filtering&#34;
+
+
+@dataclass
+class SimpleMNEFilter(BaseFilter):
+    &#34;&#34;&#34; Simple filter based on MNE. &#34;&#34;&#34;
+    l_freq: float
+    h_freq: float
+    name: str
+
+    def apply_filter(self, raw: mne.io.Raw):
+        return raw.filter(l_freq=self.l_freq,
+                          h_freq=self.h_freq,
+                          fir_design=self.name)
+
+
+@dataclass
+class BaseICA(ABC):
+
+    @abstractmethod
+    def compute_ica(self, raw: mne.io.Raw):
+        pass
+
+    @abstractmethod
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+        pass
+
+    @staticmethod
+    def step():
+        return &#34;ica&#34;
+
+
+@dataclass
+class SimpleMNEICA(BaseICA):
+    &#34;&#34;&#34; Simple ICA based on MNE &#34;&#34;&#34;
+    method: str
+    n_components: Optional[int] = None
+    random_state: int = 23
+    exclude: list[int] = field(default_factory=list)
+    ica: mne.preprocessing.ica = field(init=False)
+
+    def compute_ica(self, raw: mne.io.Raw):
+        self.ica = mne.preprocessing.ICA(n_components=self.n_components,
+                                         method=self.method,
+                                         random_state=self.random_state)
+        self.ica.fit(raw, verbose=True)
+
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+        self.ica.exclude = self.exclude
+        if make_copy:
+            return self.ica.apply(raw.copy())
+        else:
+            return self.ica.apply(raw)
+
+
+&#34;&#34;&#34;
+Classes for loading preprocessed and precomputed EEG data provided by the CCS-Department.
+&#34;&#34;&#34;
+
+
+@dataclass
+class CleaningData():
+    &#34;&#34;&#34;Load precomputed bad channels and segments provided by the CCS-Department&#34;&#34;&#34;
+    bids_path: BIDSPath
+    bad_channels: list[int] = field(default_factory=list)
+    bad_annotations: list = field(default_factory=list, repr=False)
+    channels_ext: str = &#39;badChannels.tsv&#39;
+    segments_ext: str = &#39;badSegments.csv&#39;
+
+    @staticmethod
+    def step():
+        return &#34;cleaning&#34;
+
+    def _get_fpath(self, dtype: str):
+        assert dtype in [
+            &#39;channels&#39;, &#39;segments&#39;
+        ], &#34;dataType can only have values from [&#39;channels&#39;, &#39;segments&#39;]&#34;
+        bids_path = self.bids_path
+        etx = self.channels_ext if dtype == &#39;channels&#39; else self.segments_ext
+        bad_fname = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + etx)
+        assert isfile(bad_fname), &#34;Bad {} file not found!&#34;.format(dtype)
+        return bad_fname
+
+    def _get_bad_channels(self) -&gt; np.ndarray:
+        ch_fname = self._get_fpath(&#39;channels&#39;)
+        bad_channels = np.loadtxt(ch_fname, delimiter=&#39;\t&#39;, dtype=&#39;int&#39;)
+        bad_channels -= 1  # handle 0 indexing
+        return bad_channels.reshape(-1)
+
+    def _get_bad_segments(self) -&gt; mne.Annotations:
+        import pandas as pd
+        seg_fname = self._get_fpath(&#39;segments&#39;)
+        df = pd.read_csv(seg_fname)
+        return mne.Annotations(df.onset, df.duration, df.description)
+
+    def load_bad_data(self):
+        self.bad_annotations = self._get_bad_segments()
+        self.bad_channels = self._get_bad_channels()
+
+    def apply_cleaning(self, raw: mne.io.Raw, interpolate: bool = True):
+        self.load_bad_data()
+        raw.info[&#39;bads&#39;] = [raw.ch_names[idx] for idx in self.bad_channels]
+        if interpolate:
+            raw.interpolate_bads()
+        raw.annotations.append(self.bad_annotations.onset,
+                               self.bad_annotations.duration,
+                               self.bad_annotations.description)
+
+
+@dataclass
+class PrecomputedICA(BaseICA):
+    &#34;&#34;&#34;Load precomputed ICA provided by the CCS-Department&#34;&#34;&#34;
+    bids_path: BIDSPath
+    ica_ext: str = &#39;ica.set&#39;
+    badComponent_ext: str = &#39;ica.tsv&#39;
+    ica: mne.preprocessing.ica = field(init=False)
+    exclude: list[int] = field(default_factory=list)
+
+    def _load_bad_components(self,
+                             badComponents_fname: str,
+                             delimiter: str = &#39;\t&#39;) -&gt; np.ndarray:
+        assert isfile(badComponents_fname), &#34;ICA Bad Components file not found!&#34;
+        bad_components = np.loadtxt(badComponents_fname,
+                                    delimiter=delimiter,
+                                    dtype=&#39;float&#39;)
+        # for zero indexing
+        bad_components -= 1
+        # for cases when we have only one component in the file
+        return bad_components.reshape(-1)
+
+    def _load_ica(self, ica_fname: str) -&gt; mne.preprocessing.ica:
+        assert isfile(ica_fname), &#34;ICA file not found!&#34;
+        return self.sp_read_ica_eeglab(ica_fname)
+
+    def compute_ica(self, raw: mne.io.Raw = None):
+        bids_path = self.bids_path
+        ica_file = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + self.ica_ext)
+        self.ica = self._load_ica(ica_file)
+        bad_comp = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) +
+            self.badComponent_ext)
+        self.exclude = self._load_bad_components(bad_comp)
+
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+        self.ica.exclude = self.exclude
+        if make_copy:
+            self.ica.apply(raw.copy())
+        else:
+            self.ica.apply(raw)
+
+    # taken from exercise
+    def sp_read_ica_eeglab(self, fname, *, verbose=None):
+        &#34;&#34;&#34;Load ICA information saved in an EEGLAB .set file.
+            Parameters
+            ----------
+            fname : str
+                Complete path to a .set EEGLAB file that contains an ICA object.
+            %(verbose)s
+
+            Returns
+            -------
+            ica : instance of ICA
+                An ICA object based on the information contained in the input file.
+            &#34;&#34;&#34;
+        from scipy import linalg
+        eeg = mne.preprocessing.ica._check_load_mat(fname, None)
+        info, eeg_montage, _ = mne.preprocessing.ica._get_info(eeg)
+        mne.pick_info(info,
+                      np.round(eeg[&#39;icachansind&#39;]).astype(int) - 1,
+                      copy=False)
+        info.set_montage(eeg_montage)
+
+        rank = eeg.icasphere.shape[0]
+        n_components = eeg.icaweights.shape[0]
+
+        ica = mne.preprocessing.ica.ICA(method=&#39;imported_eeglab&#39;,
+                                        n_components=n_components)
+
+        ica.current_fit = &#34;eeglab&#34;
+        ica.ch_names = info[&#34;ch_names&#34;]
+        ica.n_pca_components = None
+        ica.n_components_ = n_components
+
+        n_ch = len(ica.ch_names)
+        assert len(eeg.icachansind) == n_ch
+
+        ica.pre_whitener_ = np.ones((n_ch, 1))
+        ica.pca_mean_ = np.zeros(n_ch)
+
+        assert eeg.icasphere.shape[1] == n_ch
+        assert eeg.icaweights.shape == (n_components, rank)
+
+        # When PCA reduction is used in EEGLAB, runica returns
+        # weights= weights*sphere*eigenvectors(:,1:ncomps)&#39;;
+        # sphere = eye(urchans). When PCA reduction is not used, we have:
+        #
+        #     eeg.icawinv == pinv(eeg.icaweights @ eeg.icasphere)
+        #
+        # So in either case, we can use SVD to get our square whitened
+        # weights matrix (u * s) and our PCA vectors (v) back:
+        use = eeg.icaweights @ eeg.icasphere
+        use_check = linalg.pinv(eeg.icawinv)
+        if not np.allclose(use, use_check, rtol=1e-6):
+            logging.warn(
+                &#39;Mismatch between icawinv and icaweights @ icasphere from EEGLAB &#39;
+                &#39;possibly due to ICA component removal, assuming icawinv is &#39;
+                &#39;correct&#39;)
+            use = use_check
+        u, s, v = mne.preprocessing.ica._safe_svd(use, full_matrices=False)
+        ica.unmixing_matrix_ = u * s
+        ica.pca_components_ = v
+        ica.pca_explained_variance_ = s * s
+        ica.info = info
+        ica._update_mixing_matrix()
+        ica._update_ica_names()
+        return ica
+
+
+class IO:
+    &#34;&#34;&#34;Class for performing file IO operations&#34;&#34;&#34;
+
+    @staticmethod
+    def save_badSegments(sub_id: int, dir: str, annotations: dict):
+        &#34;&#34;&#34;Save the bad annotated segments in the raw data&#34;&#34;&#34;
+        import csv
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+        path = os.path.join(dir, &#39;sub_{}_badChannels.csv&#39;.format(sub_id))
+
+        with open(path, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+            writer = csv.writer(csvfile, delimiter=&#39;,&#39;)
+            for ann in annotations:
+                if ann[&#39;description&#39;].startswith(&#39;BAD_&#39;):
+                    logging.info(&#34;&#39;{}&#39; goes from {} to {}&#34;.format(
+                        ann[&#39;onset&#39;], ann[&#39;duration&#39;], ann[&#39;description&#39;]))
+                    writer.writerow(
+                        [ann[&#39;onset&#39;], ann[&#39;duration&#39;], ann[&#39;description&#39;]])
+
+    @staticmethod
+    def save_badChannels(sub_id: int, dir: str, channels: list[str]):
+        &#34;&#34;&#34;Save the bad channles in the raw data&#34;&#34;&#34;
+        import csv
+
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+
+        path = os.path.join(dir, &#39;sub_{}_badChannels.csv&#39;.format(sub_id))
+
+        with open(path, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+            writer = csv.writer(csvfile, delimiter=&#39;,&#39;)
+            for channel in channels:
+                writer.writerow([channel])</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.preprocessing.BaseFilter"><code class="flex name class">
+<span>class <span class="ident">BaseFilter</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>BaseFilter()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class BaseFilter(ABC):
+
+    @abstractmethod
+    def apply_filter():
+        pass
+
+    @staticmethod
+    def step():
+        return &#34;filtering&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="src.preprocessing.SimpleMNEFilter" href="#src.preprocessing.SimpleMNEFilter">SimpleMNEFilter</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.preprocessing.BaseFilter.step"><code class="name flex">
+<span>def <span class="ident">step</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def step():
+    return &#34;filtering&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.preprocessing.BaseFilter.apply_filter"><code class="name flex">
+<span>def <span class="ident">apply_filter</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def apply_filter():
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.preprocessing.BaseICA"><code class="flex name class">
+<span>class <span class="ident">BaseICA</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>BaseICA()</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class BaseICA(ABC):
+
+    @abstractmethod
+    def compute_ica(self, raw: mne.io.Raw):
+        pass
+
+    @abstractmethod
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+        pass
+
+    @staticmethod
+    def step():
+        return &#34;ica&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="src.preprocessing.PrecomputedICA" href="#src.preprocessing.PrecomputedICA">PrecomputedICA</a></li>
+<li><a title="src.preprocessing.SimpleMNEICA" href="#src.preprocessing.SimpleMNEICA">SimpleMNEICA</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.preprocessing.BaseICA.step"><code class="name flex">
+<span>def <span class="ident">step</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def step():
+    return &#34;ica&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.preprocessing.BaseICA.apply_ica"><code class="name flex">
+<span>def <span class="ident">apply_ica</span></span>(<span>self, raw: mne.io.fiff.raw.Raw, make_copy: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="src.preprocessing.BaseICA.compute_ica"><code class="name flex">
+<span>def <span class="ident">compute_ica</span></span>(<span>self, raw: mne.io.fiff.raw.Raw)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def compute_ica(self, raw: mne.io.Raw):
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.preprocessing.CleaningData"><code class="flex name class">
+<span>class <span class="ident">CleaningData</span></span>
+<span>(</span><span>bids_path: mne_bids.path.BIDSPath, bad_channels: list = &lt;factory&gt;, bad_annotations: list = &lt;factory&gt;, channels_ext: str = 'badChannels.tsv', segments_ext: str = 'badSegments.csv')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load precomputed bad channels and segments provided by the CCS-Department</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class CleaningData():
+    &#34;&#34;&#34;Load precomputed bad channels and segments provided by the CCS-Department&#34;&#34;&#34;
+    bids_path: BIDSPath
+    bad_channels: list[int] = field(default_factory=list)
+    bad_annotations: list = field(default_factory=list, repr=False)
+    channels_ext: str = &#39;badChannels.tsv&#39;
+    segments_ext: str = &#39;badSegments.csv&#39;
+
+    @staticmethod
+    def step():
+        return &#34;cleaning&#34;
+
+    def _get_fpath(self, dtype: str):
+        assert dtype in [
+            &#39;channels&#39;, &#39;segments&#39;
+        ], &#34;dataType can only have values from [&#39;channels&#39;, &#39;segments&#39;]&#34;
+        bids_path = self.bids_path
+        etx = self.channels_ext if dtype == &#39;channels&#39; else self.segments_ext
+        bad_fname = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + etx)
+        assert isfile(bad_fname), &#34;Bad {} file not found!&#34;.format(dtype)
+        return bad_fname
+
+    def _get_bad_channels(self) -&gt; np.ndarray:
+        ch_fname = self._get_fpath(&#39;channels&#39;)
+        bad_channels = np.loadtxt(ch_fname, delimiter=&#39;\t&#39;, dtype=&#39;int&#39;)
+        bad_channels -= 1  # handle 0 indexing
+        return bad_channels.reshape(-1)
+
+    def _get_bad_segments(self) -&gt; mne.Annotations:
+        import pandas as pd
+        seg_fname = self._get_fpath(&#39;segments&#39;)
+        df = pd.read_csv(seg_fname)
+        return mne.Annotations(df.onset, df.duration, df.description)
+
+    def load_bad_data(self):
+        self.bad_annotations = self._get_bad_segments()
+        self.bad_channels = self._get_bad_channels()
+
+    def apply_cleaning(self, raw: mne.io.Raw, interpolate: bool = True):
+        self.load_bad_data()
+        raw.info[&#39;bads&#39;] = [raw.ch_names[idx] for idx in self.bad_channels]
+        if interpolate:
+            raw.interpolate_bads()
+        raw.annotations.append(self.bad_annotations.onset,
+                               self.bad_annotations.duration,
+                               self.bad_annotations.description)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.preprocessing.CleaningData.bad_annotations"><code class="name">var <span class="ident">bad_annotations</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.CleaningData.bad_channels"><code class="name">var <span class="ident">bad_channels</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.CleaningData.bids_path"><code class="name">var <span class="ident">bids_path</span> : mne_bids.path.BIDSPath</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.CleaningData.channels_ext"><code class="name">var <span class="ident">channels_ext</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.CleaningData.segments_ext"><code class="name">var <span class="ident">segments_ext</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.preprocessing.CleaningData.step"><code class="name flex">
+<span>def <span class="ident">step</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def step():
+    return &#34;cleaning&#34;</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.preprocessing.CleaningData.apply_cleaning"><code class="name flex">
+<span>def <span class="ident">apply_cleaning</span></span>(<span>self, raw: mne.io.fiff.raw.Raw, interpolate: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_cleaning(self, raw: mne.io.Raw, interpolate: bool = True):
+    self.load_bad_data()
+    raw.info[&#39;bads&#39;] = [raw.ch_names[idx] for idx in self.bad_channels]
+    if interpolate:
+        raw.interpolate_bads()
+    raw.annotations.append(self.bad_annotations.onset,
+                           self.bad_annotations.duration,
+                           self.bad_annotations.description)</code></pre>
+</details>
+</dd>
+<dt id="src.preprocessing.CleaningData.load_bad_data"><code class="name flex">
+<span>def <span class="ident">load_bad_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_bad_data(self):
+    self.bad_annotations = self._get_bad_segments()
+    self.bad_channels = self._get_bad_channels()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.preprocessing.IO"><code class="flex name class">
+<span>class <span class="ident">IO</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class for performing file IO operations</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IO:
+    &#34;&#34;&#34;Class for performing file IO operations&#34;&#34;&#34;
+
+    @staticmethod
+    def save_badSegments(sub_id: int, dir: str, annotations: dict):
+        &#34;&#34;&#34;Save the bad annotated segments in the raw data&#34;&#34;&#34;
+        import csv
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+        path = os.path.join(dir, &#39;sub_{}_badChannels.csv&#39;.format(sub_id))
+
+        with open(path, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+            writer = csv.writer(csvfile, delimiter=&#39;,&#39;)
+            for ann in annotations:
+                if ann[&#39;description&#39;].startswith(&#39;BAD_&#39;):
+                    logging.info(&#34;&#39;{}&#39; goes from {} to {}&#34;.format(
+                        ann[&#39;onset&#39;], ann[&#39;duration&#39;], ann[&#39;description&#39;]))
+                    writer.writerow(
+                        [ann[&#39;onset&#39;], ann[&#39;duration&#39;], ann[&#39;description&#39;]])
+
+    @staticmethod
+    def save_badChannels(sub_id: int, dir: str, channels: list[str]):
+        &#34;&#34;&#34;Save the bad channles in the raw data&#34;&#34;&#34;
+        import csv
+
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+
+        path = os.path.join(dir, &#39;sub_{}_badChannels.csv&#39;.format(sub_id))
+
+        with open(path, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+            writer = csv.writer(csvfile, delimiter=&#39;,&#39;)
+            for channel in channels:
+                writer.writerow([channel])</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="src.preprocessing.IO.save_badChannels"><code class="name flex">
+<span>def <span class="ident">save_badChannels</span></span>(<span>sub_id: int, dir: str, channels: list)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the bad channles in the raw data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def save_badChannels(sub_id: int, dir: str, channels: list[str]):
+    &#34;&#34;&#34;Save the bad channles in the raw data&#34;&#34;&#34;
+    import csv
+
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
+
+    path = os.path.join(dir, &#39;sub_{}_badChannels.csv&#39;.format(sub_id))
+
+    with open(path, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+        writer = csv.writer(csvfile, delimiter=&#39;,&#39;)
+        for channel in channels:
+            writer.writerow([channel])</code></pre>
+</details>
+</dd>
+<dt id="src.preprocessing.IO.save_badSegments"><code class="name flex">
+<span>def <span class="ident">save_badSegments</span></span>(<span>sub_id: int, dir: str, annotations: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the bad annotated segments in the raw data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def save_badSegments(sub_id: int, dir: str, annotations: dict):
+    &#34;&#34;&#34;Save the bad annotated segments in the raw data&#34;&#34;&#34;
+    import csv
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
+    path = os.path.join(dir, &#39;sub_{}_badChannels.csv&#39;.format(sub_id))
+
+    with open(path, &#39;w&#39;, newline=&#39;&#39;) as csvfile:
+        writer = csv.writer(csvfile, delimiter=&#39;,&#39;)
+        for ann in annotations:
+            if ann[&#39;description&#39;].startswith(&#39;BAD_&#39;):
+                logging.info(&#34;&#39;{}&#39; goes from {} to {}&#34;.format(
+                    ann[&#39;onset&#39;], ann[&#39;duration&#39;], ann[&#39;description&#39;]))
+                writer.writerow(
+                    [ann[&#39;onset&#39;], ann[&#39;duration&#39;], ann[&#39;description&#39;]])</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA"><code class="flex name class">
+<span>class <span class="ident">PrecomputedICA</span></span>
+<span>(</span><span>bids_path: mne_bids.path.BIDSPath, ica_ext: str = 'ica.set', badComponent_ext: str = 'ica.tsv', exclude: list = &lt;factory&gt;)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load precomputed ICA provided by the CCS-Department</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class PrecomputedICA(BaseICA):
+    &#34;&#34;&#34;Load precomputed ICA provided by the CCS-Department&#34;&#34;&#34;
+    bids_path: BIDSPath
+    ica_ext: str = &#39;ica.set&#39;
+    badComponent_ext: str = &#39;ica.tsv&#39;
+    ica: mne.preprocessing.ica = field(init=False)
+    exclude: list[int] = field(default_factory=list)
+
+    def _load_bad_components(self,
+                             badComponents_fname: str,
+                             delimiter: str = &#39;\t&#39;) -&gt; np.ndarray:
+        assert isfile(badComponents_fname), &#34;ICA Bad Components file not found!&#34;
+        bad_components = np.loadtxt(badComponents_fname,
+                                    delimiter=delimiter,
+                                    dtype=&#39;float&#39;)
+        # for zero indexing
+        bad_components -= 1
+        # for cases when we have only one component in the file
+        return bad_components.reshape(-1)
+
+    def _load_ica(self, ica_fname: str) -&gt; mne.preprocessing.ica:
+        assert isfile(ica_fname), &#34;ICA file not found!&#34;
+        return self.sp_read_ica_eeglab(ica_fname)
+
+    def compute_ica(self, raw: mne.io.Raw = None):
+        bids_path = self.bids_path
+        ica_file = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + self.ica_ext)
+        self.ica = self._load_ica(ica_file)
+        bad_comp = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) +
+            self.badComponent_ext)
+        self.exclude = self._load_bad_components(bad_comp)
+
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+        self.ica.exclude = self.exclude
+        if make_copy:
+            self.ica.apply(raw.copy())
+        else:
+            self.ica.apply(raw)
+
+    # taken from exercise
+    def sp_read_ica_eeglab(self, fname, *, verbose=None):
+        &#34;&#34;&#34;Load ICA information saved in an EEGLAB .set file.
+            Parameters
+            ----------
+            fname : str
+                Complete path to a .set EEGLAB file that contains an ICA object.
+            %(verbose)s
+
+            Returns
+            -------
+            ica : instance of ICA
+                An ICA object based on the information contained in the input file.
+            &#34;&#34;&#34;
+        from scipy import linalg
+        eeg = mne.preprocessing.ica._check_load_mat(fname, None)
+        info, eeg_montage, _ = mne.preprocessing.ica._get_info(eeg)
+        mne.pick_info(info,
+                      np.round(eeg[&#39;icachansind&#39;]).astype(int) - 1,
+                      copy=False)
+        info.set_montage(eeg_montage)
+
+        rank = eeg.icasphere.shape[0]
+        n_components = eeg.icaweights.shape[0]
+
+        ica = mne.preprocessing.ica.ICA(method=&#39;imported_eeglab&#39;,
+                                        n_components=n_components)
+
+        ica.current_fit = &#34;eeglab&#34;
+        ica.ch_names = info[&#34;ch_names&#34;]
+        ica.n_pca_components = None
+        ica.n_components_ = n_components
+
+        n_ch = len(ica.ch_names)
+        assert len(eeg.icachansind) == n_ch
+
+        ica.pre_whitener_ = np.ones((n_ch, 1))
+        ica.pca_mean_ = np.zeros(n_ch)
+
+        assert eeg.icasphere.shape[1] == n_ch
+        assert eeg.icaweights.shape == (n_components, rank)
+
+        # When PCA reduction is used in EEGLAB, runica returns
+        # weights= weights*sphere*eigenvectors(:,1:ncomps)&#39;;
+        # sphere = eye(urchans). When PCA reduction is not used, we have:
+        #
+        #     eeg.icawinv == pinv(eeg.icaweights @ eeg.icasphere)
+        #
+        # So in either case, we can use SVD to get our square whitened
+        # weights matrix (u * s) and our PCA vectors (v) back:
+        use = eeg.icaweights @ eeg.icasphere
+        use_check = linalg.pinv(eeg.icawinv)
+        if not np.allclose(use, use_check, rtol=1e-6):
+            logging.warn(
+                &#39;Mismatch between icawinv and icaweights @ icasphere from EEGLAB &#39;
+                &#39;possibly due to ICA component removal, assuming icawinv is &#39;
+                &#39;correct&#39;)
+            use = use_check
+        u, s, v = mne.preprocessing.ica._safe_svd(use, full_matrices=False)
+        ica.unmixing_matrix_ = u * s
+        ica.pca_components_ = v
+        ica.pca_explained_variance_ = s * s
+        ica.info = info
+        ica._update_mixing_matrix()
+        ica._update_ica_names()
+        return ica</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="src.preprocessing.BaseICA" href="#src.preprocessing.BaseICA">BaseICA</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.preprocessing.PrecomputedICA.badComponent_ext"><code class="name">var <span class="ident">badComponent_ext</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA.bids_path"><code class="name">var <span class="ident">bids_path</span> : mne_bids.path.BIDSPath</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA.exclude"><code class="name">var <span class="ident">exclude</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA.ica"><code class="name">var <span class="ident">ica</span> : <module 'mne.preprocessing.ica' from 'C:\\Users\\sktsa\\miniconda3\\envs\\eeg-pipeline\\lib\\site-packages\\mne\\preprocessing\\ica.py'></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA.ica_ext"><code class="name">var <span class="ident">ica_ext</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.preprocessing.PrecomputedICA.apply_ica"><code class="name flex">
+<span>def <span class="ident">apply_ica</span></span>(<span>self, raw: mne.io.fiff.raw.Raw, make_copy: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+    self.ica.exclude = self.exclude
+    if make_copy:
+        self.ica.apply(raw.copy())
+    else:
+        self.ica.apply(raw)</code></pre>
+</details>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA.compute_ica"><code class="name flex">
+<span>def <span class="ident">compute_ica</span></span>(<span>self, raw: mne.io.fiff.raw.Raw = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_ica(self, raw: mne.io.Raw = None):
+    bids_path = self.bids_path
+    ica_file = os.path.join(
+        bids_path.directory,
+        bids_path.basename.removesuffix(bids_path.suffix) + self.ica_ext)
+    self.ica = self._load_ica(ica_file)
+    bad_comp = os.path.join(
+        bids_path.directory,
+        bids_path.basename.removesuffix(bids_path.suffix) +
+        self.badComponent_ext)
+    self.exclude = self._load_bad_components(bad_comp)</code></pre>
+</details>
+</dd>
+<dt id="src.preprocessing.PrecomputedICA.sp_read_ica_eeglab"><code class="name flex">
+<span>def <span class="ident">sp_read_ica_eeglab</span></span>(<span>self, fname, *, verbose=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load ICA information saved in an EEGLAB .set file.
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>fname</code></strong> :&ensp;<code>str</code></dt>
+<dd>Complete path to a .set EEGLAB file that contains an ICA object.</dd>
+</dl>
+<p>%(verbose)s</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ica</code></strong> :&ensp;<code>instance</code> of <code>ICA</code></dt>
+<dd>An ICA object based on the information contained in the input file.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sp_read_ica_eeglab(self, fname, *, verbose=None):
+    &#34;&#34;&#34;Load ICA information saved in an EEGLAB .set file.
+        Parameters
+        ----------
+        fname : str
+            Complete path to a .set EEGLAB file that contains an ICA object.
+        %(verbose)s
+
+        Returns
+        -------
+        ica : instance of ICA
+            An ICA object based on the information contained in the input file.
+        &#34;&#34;&#34;
+    from scipy import linalg
+    eeg = mne.preprocessing.ica._check_load_mat(fname, None)
+    info, eeg_montage, _ = mne.preprocessing.ica._get_info(eeg)
+    mne.pick_info(info,
+                  np.round(eeg[&#39;icachansind&#39;]).astype(int) - 1,
+                  copy=False)
+    info.set_montage(eeg_montage)
+
+    rank = eeg.icasphere.shape[0]
+    n_components = eeg.icaweights.shape[0]
+
+    ica = mne.preprocessing.ica.ICA(method=&#39;imported_eeglab&#39;,
+                                    n_components=n_components)
+
+    ica.current_fit = &#34;eeglab&#34;
+    ica.ch_names = info[&#34;ch_names&#34;]
+    ica.n_pca_components = None
+    ica.n_components_ = n_components
+
+    n_ch = len(ica.ch_names)
+    assert len(eeg.icachansind) == n_ch
+
+    ica.pre_whitener_ = np.ones((n_ch, 1))
+    ica.pca_mean_ = np.zeros(n_ch)
+
+    assert eeg.icasphere.shape[1] == n_ch
+    assert eeg.icaweights.shape == (n_components, rank)
+
+    # When PCA reduction is used in EEGLAB, runica returns
+    # weights= weights*sphere*eigenvectors(:,1:ncomps)&#39;;
+    # sphere = eye(urchans). When PCA reduction is not used, we have:
+    #
+    #     eeg.icawinv == pinv(eeg.icaweights @ eeg.icasphere)
+    #
+    # So in either case, we can use SVD to get our square whitened
+    # weights matrix (u * s) and our PCA vectors (v) back:
+    use = eeg.icaweights @ eeg.icasphere
+    use_check = linalg.pinv(eeg.icawinv)
+    if not np.allclose(use, use_check, rtol=1e-6):
+        logging.warn(
+            &#39;Mismatch between icawinv and icaweights @ icasphere from EEGLAB &#39;
+            &#39;possibly due to ICA component removal, assuming icawinv is &#39;
+            &#39;correct&#39;)
+        use = use_check
+    u, s, v = mne.preprocessing.ica._safe_svd(use, full_matrices=False)
+    ica.unmixing_matrix_ = u * s
+    ica.pca_components_ = v
+    ica.pca_explained_variance_ = s * s
+    ica.info = info
+    ica._update_mixing_matrix()
+    ica._update_ica_names()
+    return ica</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.preprocessing.SimpleMNEFilter"><code class="flex name class">
+<span>class <span class="ident">SimpleMNEFilter</span></span>
+<span>(</span><span>l_freq: float, h_freq: float, name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple filter based on MNE.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class SimpleMNEFilter(BaseFilter):
+    &#34;&#34;&#34; Simple filter based on MNE. &#34;&#34;&#34;
+    l_freq: float
+    h_freq: float
+    name: str
+
+    def apply_filter(self, raw: mne.io.Raw):
+        return raw.filter(l_freq=self.l_freq,
+                          h_freq=self.h_freq,
+                          fir_design=self.name)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="src.preprocessing.BaseFilter" href="#src.preprocessing.BaseFilter">BaseFilter</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.preprocessing.SimpleMNEFilter.h_freq"><code class="name">var <span class="ident">h_freq</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.SimpleMNEFilter.l_freq"><code class="name">var <span class="ident">l_freq</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.SimpleMNEFilter.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.preprocessing.SimpleMNEFilter.apply_filter"><code class="name flex">
+<span>def <span class="ident">apply_filter</span></span>(<span>self, raw: mne.io.fiff.raw.Raw)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_filter(self, raw: mne.io.Raw):
+    return raw.filter(l_freq=self.l_freq,
+                      h_freq=self.h_freq,
+                      fir_design=self.name)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.preprocessing.SimpleMNEICA"><code class="flex name class">
+<span>class <span class="ident">SimpleMNEICA</span></span>
+<span>(</span><span>method: str, n_components: Optional[int] = None, random_state: int = 23, exclude: list = &lt;factory&gt;)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simple ICA based on MNE</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class SimpleMNEICA(BaseICA):
+    &#34;&#34;&#34; Simple ICA based on MNE &#34;&#34;&#34;
+    method: str
+    n_components: Optional[int] = None
+    random_state: int = 23
+    exclude: list[int] = field(default_factory=list)
+    ica: mne.preprocessing.ica = field(init=False)
+
+    def compute_ica(self, raw: mne.io.Raw):
+        self.ica = mne.preprocessing.ICA(n_components=self.n_components,
+                                         method=self.method,
+                                         random_state=self.random_state)
+        self.ica.fit(raw, verbose=True)
+
+    def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+        self.ica.exclude = self.exclude
+        if make_copy:
+            return self.ica.apply(raw.copy())
+        else:
+            return self.ica.apply(raw)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="src.preprocessing.BaseICA" href="#src.preprocessing.BaseICA">BaseICA</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.preprocessing.SimpleMNEICA.exclude"><code class="name">var <span class="ident">exclude</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.SimpleMNEICA.ica"><code class="name">var <span class="ident">ica</span> : <module 'mne.preprocessing.ica' from 'C:\\Users\\sktsa\\miniconda3\\envs\\eeg-pipeline\\lib\\site-packages\\mne\\preprocessing\\ica.py'></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.SimpleMNEICA.method"><code class="name">var <span class="ident">method</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.SimpleMNEICA.n_components"><code class="name">var <span class="ident">n_components</span> : Optional[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.preprocessing.SimpleMNEICA.random_state"><code class="name">var <span class="ident">random_state</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.preprocessing.SimpleMNEICA.apply_ica"><code class="name flex">
+<span>def <span class="ident">apply_ica</span></span>(<span>self, raw: mne.io.fiff.raw.Raw, make_copy: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_ica(self, raw: mne.io.Raw, make_copy: bool = False):
+    self.ica.exclude = self.exclude
+    if make_copy:
+        return self.ica.apply(raw.copy())
+    else:
+        return self.ica.apply(raw)</code></pre>
+</details>
+</dd>
+<dt id="src.preprocessing.SimpleMNEICA.compute_ica"><code class="name flex">
+<span>def <span class="ident">compute_ica</span></span>(<span>self, raw: mne.io.fiff.raw.Raw)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_ica(self, raw: mne.io.Raw):
+    self.ica = mne.preprocessing.ICA(n_components=self.n_components,
+                                     method=self.method,
+                                     random_state=self.random_state)
+    self.ica.fit(raw, verbose=True)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src" href="index.html">src</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.preprocessing.BaseFilter" href="#src.preprocessing.BaseFilter">BaseFilter</a></code></h4>
+<ul class="">
+<li><code><a title="src.preprocessing.BaseFilter.apply_filter" href="#src.preprocessing.BaseFilter.apply_filter">apply_filter</a></code></li>
+<li><code><a title="src.preprocessing.BaseFilter.step" href="#src.preprocessing.BaseFilter.step">step</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.preprocessing.BaseICA" href="#src.preprocessing.BaseICA">BaseICA</a></code></h4>
+<ul class="">
+<li><code><a title="src.preprocessing.BaseICA.apply_ica" href="#src.preprocessing.BaseICA.apply_ica">apply_ica</a></code></li>
+<li><code><a title="src.preprocessing.BaseICA.compute_ica" href="#src.preprocessing.BaseICA.compute_ica">compute_ica</a></code></li>
+<li><code><a title="src.preprocessing.BaseICA.step" href="#src.preprocessing.BaseICA.step">step</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.preprocessing.CleaningData" href="#src.preprocessing.CleaningData">CleaningData</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.preprocessing.CleaningData.apply_cleaning" href="#src.preprocessing.CleaningData.apply_cleaning">apply_cleaning</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.bad_annotations" href="#src.preprocessing.CleaningData.bad_annotations">bad_annotations</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.bad_channels" href="#src.preprocessing.CleaningData.bad_channels">bad_channels</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.bids_path" href="#src.preprocessing.CleaningData.bids_path">bids_path</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.channels_ext" href="#src.preprocessing.CleaningData.channels_ext">channels_ext</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.load_bad_data" href="#src.preprocessing.CleaningData.load_bad_data">load_bad_data</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.segments_ext" href="#src.preprocessing.CleaningData.segments_ext">segments_ext</a></code></li>
+<li><code><a title="src.preprocessing.CleaningData.step" href="#src.preprocessing.CleaningData.step">step</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.preprocessing.IO" href="#src.preprocessing.IO">IO</a></code></h4>
+<ul class="">
+<li><code><a title="src.preprocessing.IO.save_badChannels" href="#src.preprocessing.IO.save_badChannels">save_badChannels</a></code></li>
+<li><code><a title="src.preprocessing.IO.save_badSegments" href="#src.preprocessing.IO.save_badSegments">save_badSegments</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.preprocessing.PrecomputedICA" href="#src.preprocessing.PrecomputedICA">PrecomputedICA</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.preprocessing.PrecomputedICA.apply_ica" href="#src.preprocessing.PrecomputedICA.apply_ica">apply_ica</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.badComponent_ext" href="#src.preprocessing.PrecomputedICA.badComponent_ext">badComponent_ext</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.bids_path" href="#src.preprocessing.PrecomputedICA.bids_path">bids_path</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.compute_ica" href="#src.preprocessing.PrecomputedICA.compute_ica">compute_ica</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.exclude" href="#src.preprocessing.PrecomputedICA.exclude">exclude</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.ica" href="#src.preprocessing.PrecomputedICA.ica">ica</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.ica_ext" href="#src.preprocessing.PrecomputedICA.ica_ext">ica_ext</a></code></li>
+<li><code><a title="src.preprocessing.PrecomputedICA.sp_read_ica_eeglab" href="#src.preprocessing.PrecomputedICA.sp_read_ica_eeglab">sp_read_ica_eeglab</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.preprocessing.SimpleMNEFilter" href="#src.preprocessing.SimpleMNEFilter">SimpleMNEFilter</a></code></h4>
+<ul class="">
+<li><code><a title="src.preprocessing.SimpleMNEFilter.apply_filter" href="#src.preprocessing.SimpleMNEFilter.apply_filter">apply_filter</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEFilter.h_freq" href="#src.preprocessing.SimpleMNEFilter.h_freq">h_freq</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEFilter.l_freq" href="#src.preprocessing.SimpleMNEFilter.l_freq">l_freq</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEFilter.name" href="#src.preprocessing.SimpleMNEFilter.name">name</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.preprocessing.SimpleMNEICA" href="#src.preprocessing.SimpleMNEICA">SimpleMNEICA</a></code></h4>
+<ul class="two-column">
+<li><code><a title="src.preprocessing.SimpleMNEICA.apply_ica" href="#src.preprocessing.SimpleMNEICA.apply_ica">apply_ica</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEICA.compute_ica" href="#src.preprocessing.SimpleMNEICA.compute_ica">compute_ica</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEICA.exclude" href="#src.preprocessing.SimpleMNEICA.exclude">exclude</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEICA.ica" href="#src.preprocessing.SimpleMNEICA.ica">ica</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEICA.method" href="#src.preprocessing.SimpleMNEICA.method">method</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEICA.n_components" href="#src.preprocessing.SimpleMNEICA.n_components">n_components</a></code></li>
+<li><code><a title="src.preprocessing.SimpleMNEICA.random_state" href="#src.preprocessing.SimpleMNEICA.random_state">random_state</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

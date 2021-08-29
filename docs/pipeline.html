@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>src.pipeline API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.pipeline</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from decoding_analysis import EEGDecoder
+from tqdm import tqdm
+from multiprocessing import Pool
+from dataclasses import dataclass
+from genericpath import isfile
+from mne_bids import (BIDSPath, read_raw_bids)
+from typing import Optional, Union, Tuple, Dict, List
+from encoding_analysis import Encoder
+from erpanalysis import ERPAnalysis
+from preprocessing import *
+
+import os
+import mne
+import logging
+import warnings
+import pandas as pd
+
+
+class P3:
+    &#34;&#34;&#34;Helper class for P3 tasks&#34;&#34;&#34;
+
+    @abstractmethod
+    def EVENTS_MAPINGS() -&gt; Tuple[dict, list[int], list[int]]:
+        blocks = np.array(
+            [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
+        rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))
+                        ]).tolist()
+        freq = np.setdiff1d(blocks.flatten(), rare).tolist()
+
+        stimlus = [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39;]
+
+        evts_stim = [
+            &#39;stimulus/&#39; + stimlus[i] + &#39;/rare/&#39; +
+            str(alph) if alph in rare else &#39;stimulus/&#39; + stimlus[i] + &#39;/freq/&#39; +
+            str(alph) for i, x in enumerate(blocks) for alph in x
+        ]
+        evts_id = dict((i + 3, evts_stim[i]) for i in range(0, len(evts_stim)))
+        evts_id[1] = &#39;response/correct/201&#39;
+        evts_id[2] = &#39;response/error/202&#39;
+        return evts_id, rare, freq
+
+
+@dataclass
+class Pipeline:
+    &#34;&#34;&#34; Pipeline for processing Encoding and Decoding Analysis on EEG data&#34;&#34;&#34;
+    bids_path: Union[str, list[str]]
+    subject: Optional[int] = None
+    events_mapping: P3 = P3.EVENTS_MAPINGS()
+    verbose: logging = logging.INFO
+    raw: mne.io.Raw = field(init=False, repr=False)
+    events: np.ndarray = field(init=False, repr=False)
+    event_ids: dict = field(init=False, repr=False)
+    decoding_score: Tuple = field(init=False, repr=False, default=None)
+
+    def __post_init__(self):
+        logging.basicConfig(level=self.verbose)
+        mne.set_log_level(verbose=&#39;ERROR&#39;)
+        warnings.filterwarnings(&#34;ignore&#34;)
+
+    def __str__(self) -&gt; str:
+        info = (
+            &#39;The raw data for subject {} has {} time samples and {} channels.\n&#39;
+            .format(self.subject, self.raw.n_times, len(self.raw.ch_names)) +
+            &#39;The last time sample is at {} seconds.&#39;.format(self.raw.times[-1])
+            + &#39;The first few channel names are {}....\n&#39;.format(&#39;, &#39;.join(
+                self.raw.ch_names[:5])) +
+            &#39;sample rate: {} Hz.\n&#39;.format(self.raw.info[&#39;sfreq&#39;]) +
+            &#39;%s channels x %s samples\n\n&#39; %
+            (len(self.raw), len(self.raw.times)))
+        return info
+
+    def set_montage(self) -&gt; None:
+        &#34;&#34;&#34;Set the montage for EEG data&#34;&#34;&#34;
+        montage_dir = os.path.join(os.path.dirname(mne.__file__), &#39;channels&#39;,
+                                   &#39;data&#39;, &#39;montages&#39;)
+        logging.debug(sorted(os.listdir(montage_dir)))
+        ten_twenty_montage = mne.channels.make_standard_montage(&#39;standard_1020&#39;)
+        self.raw.set_channel_types({
+            &#39;HEOG_left&#39;: &#39;eog&#39;,
+            &#39;HEOG_right&#39;: &#39;eog&#39;,
+            &#39;VEOG_lower&#39;: &#39;eog&#39;
+        })
+        self.raw.set_montage(ten_twenty_montage, match_case=False)
+        logging.info(&#34;Standard 1020 montage and EOG channels are set&#34;)
+
+    def load_data(self, event_id: Union[Dict, str] = &#34;auto&#34;) -&gt; any:
+        &#34;&#34;&#34;Load the mne raw data and find events and event ids from annotations&#34;&#34;&#34;
+        logging.info(&#34;Loading Data&#34;)
+        raw = read_raw_bids(bids_path=self.bids_path)
+        self.subject = self.bids_path.subject
+        self.events, self.event_ids = mne.events_from_annotations(
+            raw, event_id=event_id)
+        self.raw = raw.load_data()
+        return self
+
+    def set_custom_events_mapping(self,
+                                  mapping: Dict[int, str] = None,
+                                  task: str = None) -&gt; None:
+        &#34;&#34;&#34;Custom mappings for the P3 task&#34;&#34;&#34;
+        if task == &#39;P3&#39;:
+            mapping, _, _ = P3.EVENTS_MAPINGS()
+        assert mapping is not None, &#34;Mapping is not defined! Please pass mapping as argument&#34;
+
+        annot_from_events = mne.annotations_from_events(
+            events=self.events,
+            event_desc=mapping,
+            sfreq=self.raw.info[&#39;sfreq&#39;])
+        self.raw.set_annotations(annot_from_events)
+        self.events, self.event_ids = mne.events_from_annotations(self.raw)
+
+    def apply_resampling(self,
+                         sampling_freq: int,
+                         padding: str = &#39;auto&#39;) -&gt; None:
+        &#34;&#34;&#34;Apply resampling on the mne raw data&#34;&#34;&#34;
+        logging.info(&#34;Applying resampling&#34;)
+        self.raw, self.events = self.raw.resample(sampling_freq,
+                                                  npad=padding,
+                                                  events=self.events)
+
+    def apply_rereferencing(self, reference_channels: Union[List[str],
+                                                            str]) -&gt; None:
+        &#34;&#34;&#34;Apply re-referencing on the channels present in mne raw object&#34;&#34;&#34;
+        logging.info(&#34;Applying re-referencing&#34;)
+        mne.io.set_eeg_reference(self.raw, ref_channels=reference_channels)
+
+    def apply_cleaning(self, cleaner: CleaningData):
+        &#34;&#34;&#34;Apply cleaning of bad segments and bad channels&#34;&#34;&#34;
+        logging.info(&#34;Applying cleaning&#34;)
+        cleaner.apply_cleaning(self.raw)
+
+    def apply_filter(self, filter: BaseFilter) -&gt; None:
+        &#34;&#34;&#34;Apply filtering on raw data&#34;&#34;&#34;
+        logging.info(&#34;Applying filtering&#34;)
+        filter.apply_filter(self.raw)
+
+    def apply_ica(self, ica: BaseICA) -&gt; None:
+        &#34;&#34;&#34;Apply ICA on the raw data&#34;&#34;&#34;
+        logging.info(&#34;Applying ICA&#34;)
+        ica.compute_ica(self.raw)
+        ica.apply_ica(self.raw)
+
+    def get_events_df(self, events_ext: str = &#39;events.tsv&#39;) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Returns Pandas dataframe containing the events from the BIDS path&#34;&#34;&#34;
+        bids_path = self.bids_path
+        fname = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + events_ext)
+        assert isfile(fname), &#34;Events file not found!&#34;
+        return pd.read_csv(fname, delimiter=&#39;\t&#39;)
+
+    def compute_epochs(self, erp: any) -&gt; mne.Epochs:
+        &#34;&#34;&#34;Perform ERP epochs computation task&#34;&#34;&#34;
+        return erp.compute_epochs(self.raw, self.events, self.event_ids)
+
+    def compute_erp_peak(self,
+                         erp: any,
+                         condition: str,
+                         thypo: float,
+                         offset: float = 0.05,
+                         channels: list[str] = []) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Perform ERP Peak computation task&#34;&#34;&#34;
+        self.compute_epochs(erp)
+        return erp.compute_peak(condition, thypo, offset, channels)
+
+    def apply_decoder(self, decoder: EEGDecoder) -&gt; Tuple:
+        &#34;&#34;&#34;Perfrom Decoding Analysis&#34;&#34;&#34;
+        svm_scores = decoder.run_svm_()
+        # sliding_scores = decoder.run_sliding_() somehow doesnot work!
+        decoding_score = svm_scores
+        self.decoding_score = decoding_score
+        return decoding_score
+
+    def _parallel_process_raws(self, pipeline) -&gt; mne.io.Raw:
+        &#34;&#34;&#34;Perform preprocessig steps on list of raws using multiprocessing&#34;&#34;&#34;
+        pipeline.load_data()
+        pipeline.set_montage()
+        pipeline.make_pipeline([
+            SimpleMNEFilter(0.1, 50, &#39;firwin&#39;),
+            CleaningData(pipeline.bids_path),
+            PrecomputedICA(pipeline.bids_path)
+        ])
+        pipeline.set_custom_events_mapping(task=&#39;P3&#39;)
+        return pipeline.raw
+
+    def load_multiple_subjects(self,
+                               n_subjects: int = 40,
+                               preload: bool = False) -&gt; None:
+        &#34;&#34;&#34;Load subjects into current mne raw object&#34;&#34;&#34;
+
+        curr_sub = [int(self.bids_path.subject)]
+        subjects = set(range(1, n_subjects + 1)) - set(curr_sub)
+        bids_paths = [
+            self.bids_path.copy().update(subject=str(x).zfill(3))
+            for x in subjects
+        ]
+        pipelines = [
+            Pipeline(bids_path=path, verbose=logging.ERROR)
+            for path in bids_paths
+        ]
+        with Pool(6) as p:
+            raws = list(
+                tqdm(p.imap(self._parallel_process_raws, pipelines),
+                     total=n_subjects - 1))
+
+        raws.append(self.raw)
+        self.raw = mne.concatenate_raws(raws)
+        self.events, self.event_ids = mne.events_from_annotations(self.raw)
+        if preload:
+            self.raw.load_data()
+        self.set_montage()
+
+    def apply(self, step: list) -&gt; None:
+        &#34;&#34;&#34;Find the step to apply&#34;&#34;&#34;
+        if isinstance(step, tuple):
+            step_name = step[0]
+            step = step[1]
+        else:
+            step_name = step.step()
+        if step_name == &#39;cleaning&#39;:
+            self.apply_cleaning(step)
+        elif step_name == &#39;filtering&#39;:
+            self.apply_filter(step)
+        elif step_name == &#39;ica&#39;:
+            self.apply_ica(step)
+        elif step_name == &#39;erp&#39;:
+            self.compute_epochs(step)
+        elif step_name == &#39;decoding&#39;:
+            self.apply_decoder(step)
+        elif step_name == &#39;classifier&#39;:
+            self.apply_classifier(step)
+        elif step_name == &#39;reference&#39;:
+            self.apply_rereferencing(step)
+        elif step_name == &#39;resample&#39;:
+            self.apply_resampling(step)
+        else:
+            logging.error(&#34;Invalid pipeline operation!&#34;)
+
+    def make_pipeline(self, steps: list) -&gt; None:
+        &#34;&#34;&#34;Perform the list of steps on the current mne raw object&#34;&#34;&#34;
+        logging.info(
+            &#34;*&#34; * 5 +
+            &#34;Proceesing for subject: {}&#34;.format(self.bids_path.subject) +
+            &#34;*&#34; * 5)
+        for step in steps:
+            self.apply(step)
+        logging.info(&#34;Processed subject {}\n&#34;.format(self.bids_path.subject))
+
+
+@dataclass
+class MultiPipeline():
+    &#34;&#34;&#34;Performs pipeline operations on list of pipelines&#34;&#34;&#34;
+    bids_root: str
+    verbose: int = logging.ERROR
+    subjects: list[str] = field(init=False, default=None)
+    bids_paths: list[BIDSPath] = field(init=False)
+    pipelines: list[Pipeline] = field(init=False)
+
+    def __post_init__(self) -&gt; None:
+        logging.basicConfig(level=self.verbose)
+        self.subjects = [
+            sub for sub in os.listdir(self.bids_root)
+            if os.path.isdir(os.path.join(self.bids_root, sub))
+        ]
+        bids_path = BIDSPath(subject=&#39;001&#39;,
+                             session=&#39;P3&#39;,
+                             task=&#39;P3&#39;,
+                             datatype=&#39;eeg&#39;,
+                             suffix=&#39;eeg&#39;,
+                             root=self.bids_root)
+        self.bids_paths = [
+            bids_path.copy().update(subject=sub.split(&#39;-&#39;)[-1])
+            for sub in self.subjects
+        ]
+
+        self.pipelines = [
+            Pipeline(bids_path=path, verbose=logging.ERROR)
+            for path in self.bids_paths
+        ]
+
+        self.pipelines.sort(key=lambda x: int(x.bids_path.subject))
+
+    def _start_preprocessing(self, pipeline) -&gt; list[Pipeline]:
+        &#34;&#34;&#34;
+        Helper function to parallelize the preprocessing steps.
+        
+        Returns list of Pipelines having preprocessed data, In future, steps should be passed as parameter.
+        
+        &#34;&#34;&#34;
+        pipeline.load_data()
+        pipeline.set_custom_events_mapping(task=&#39;P3&#39;)
+        pipeline.set_montage()
+        steps = [
+            SimpleMNEFilter(0.5, 50, &#39;firwin&#39;),
+            CleaningData(pipeline.bids_path),
+            PrecomputedICA(pipeline.bids_path), (&#39;reference&#39;, [&#39;P9&#39;, &#39;P10&#39;]),
+            (&#39;resample&#39;, 256)
+        ]
+        pipeline.make_pipeline(steps)
+        return pipeline
+
+    def start_erp_analysis(self, erpanalysis, jobs: int = 6):
+        &#34;&#34;&#34;
+        Performs ERP Analysis on Pipelines
+        &#34;&#34;&#34;
+        pipelines = self.pipelines
+        with Pool(jobs) as p:
+            pipelines = list(
+                tqdm(p.imap(self._start_preprocessing, pipelines),
+                     total=len(self.subjects)))
+
+        for pipeline in pipelines:
+            pipeline.compute_epochs(erpanalysis)
+
+        return erpanalysis
+
+    def start_encoding_analysis(self, erp: ERPAnalysis, encoder: Encoder):
+        &#34;&#34;&#34;
+        Performs Encoding Analysis on Pipelines
+        &#34;&#34;&#34;
+        assert erp.all_subjects, &#39;You have to run erp analysis first&#39;
+        for epoch in erp.epochs:
+            encoder.fit(epoch)
+
+    def start_preprocessing(self, jobs: int = 6) -&gt; list[Pipeline]:
+        &#34;&#34;&#34;
+        Performs perprocessing on a list of pipelines.
+        
+        Pipelines are created by the list of BIDS paths in the BIDS root directory
+        &#34;&#34;&#34;
+
+        pipelines = self.pipelines
+
+        with Pool(jobs) as p:
+            pipelines = list(
+                tqdm(p.imap(self._start_preprocessing, pipelines),
+                     total=len(self.subjects)))
+
+        return pipelines</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="src.pipeline.MultiPipeline"><code class="flex name class">
+<span>class <span class="ident">MultiPipeline</span></span>
+<span>(</span><span>bids_root: str, verbose: int = 40)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs pipeline operations on list of pipelines</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class MultiPipeline():
+    &#34;&#34;&#34;Performs pipeline operations on list of pipelines&#34;&#34;&#34;
+    bids_root: str
+    verbose: int = logging.ERROR
+    subjects: list[str] = field(init=False, default=None)
+    bids_paths: list[BIDSPath] = field(init=False)
+    pipelines: list[Pipeline] = field(init=False)
+
+    def __post_init__(self) -&gt; None:
+        logging.basicConfig(level=self.verbose)
+        self.subjects = [
+            sub for sub in os.listdir(self.bids_root)
+            if os.path.isdir(os.path.join(self.bids_root, sub))
+        ]
+        bids_path = BIDSPath(subject=&#39;001&#39;,
+                             session=&#39;P3&#39;,
+                             task=&#39;P3&#39;,
+                             datatype=&#39;eeg&#39;,
+                             suffix=&#39;eeg&#39;,
+                             root=self.bids_root)
+        self.bids_paths = [
+            bids_path.copy().update(subject=sub.split(&#39;-&#39;)[-1])
+            for sub in self.subjects
+        ]
+
+        self.pipelines = [
+            Pipeline(bids_path=path, verbose=logging.ERROR)
+            for path in self.bids_paths
+        ]
+
+        self.pipelines.sort(key=lambda x: int(x.bids_path.subject))
+
+    def _start_preprocessing(self, pipeline) -&gt; list[Pipeline]:
+        &#34;&#34;&#34;
+        Helper function to parallelize the preprocessing steps.
+        
+        Returns list of Pipelines having preprocessed data, In future, steps should be passed as parameter.
+        
+        &#34;&#34;&#34;
+        pipeline.load_data()
+        pipeline.set_custom_events_mapping(task=&#39;P3&#39;)
+        pipeline.set_montage()
+        steps = [
+            SimpleMNEFilter(0.5, 50, &#39;firwin&#39;),
+            CleaningData(pipeline.bids_path),
+            PrecomputedICA(pipeline.bids_path), (&#39;reference&#39;, [&#39;P9&#39;, &#39;P10&#39;]),
+            (&#39;resample&#39;, 256)
+        ]
+        pipeline.make_pipeline(steps)
+        return pipeline
+
+    def start_erp_analysis(self, erpanalysis, jobs: int = 6):
+        &#34;&#34;&#34;
+        Performs ERP Analysis on Pipelines
+        &#34;&#34;&#34;
+        pipelines = self.pipelines
+        with Pool(jobs) as p:
+            pipelines = list(
+                tqdm(p.imap(self._start_preprocessing, pipelines),
+                     total=len(self.subjects)))
+
+        for pipeline in pipelines:
+            pipeline.compute_epochs(erpanalysis)
+
+        return erpanalysis
+
+    def start_encoding_analysis(self, erp: ERPAnalysis, encoder: Encoder):
+        &#34;&#34;&#34;
+        Performs Encoding Analysis on Pipelines
+        &#34;&#34;&#34;
+        assert erp.all_subjects, &#39;You have to run erp analysis first&#39;
+        for epoch in erp.epochs:
+            encoder.fit(epoch)
+
+    def start_preprocessing(self, jobs: int = 6) -&gt; list[Pipeline]:
+        &#34;&#34;&#34;
+        Performs perprocessing on a list of pipelines.
+        
+        Pipelines are created by the list of BIDS paths in the BIDS root directory
+        &#34;&#34;&#34;
+
+        pipelines = self.pipelines
+
+        with Pool(jobs) as p:
+            pipelines = list(
+                tqdm(p.imap(self._start_preprocessing, pipelines),
+                     total=len(self.subjects)))
+
+        return pipelines</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.pipeline.MultiPipeline.bids_paths"><code class="name">var <span class="ident">bids_paths</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.MultiPipeline.bids_root"><code class="name">var <span class="ident">bids_root</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.MultiPipeline.pipelines"><code class="name">var <span class="ident">pipelines</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.MultiPipeline.subjects"><code class="name">var <span class="ident">subjects</span> : list</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.MultiPipeline.verbose"><code class="name">var <span class="ident">verbose</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.pipeline.MultiPipeline.start_encoding_analysis"><code class="name flex">
+<span>def <span class="ident">start_encoding_analysis</span></span>(<span>self, erp: erpanalysis.ERPAnalysis, encoder: encoding_analysis.Encoder)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs Encoding Analysis on Pipelines</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def start_encoding_analysis(self, erp: ERPAnalysis, encoder: Encoder):
+    &#34;&#34;&#34;
+    Performs Encoding Analysis on Pipelines
+    &#34;&#34;&#34;
+    assert erp.all_subjects, &#39;You have to run erp analysis first&#39;
+    for epoch in erp.epochs:
+        encoder.fit(epoch)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.MultiPipeline.start_erp_analysis"><code class="name flex">
+<span>def <span class="ident">start_erp_analysis</span></span>(<span>self, erpanalysis, jobs: int = 6)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs ERP Analysis on Pipelines</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def start_erp_analysis(self, erpanalysis, jobs: int = 6):
+    &#34;&#34;&#34;
+    Performs ERP Analysis on Pipelines
+    &#34;&#34;&#34;
+    pipelines = self.pipelines
+    with Pool(jobs) as p:
+        pipelines = list(
+            tqdm(p.imap(self._start_preprocessing, pipelines),
+                 total=len(self.subjects)))
+
+    for pipeline in pipelines:
+        pipeline.compute_epochs(erpanalysis)
+
+    return erpanalysis</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.MultiPipeline.start_preprocessing"><code class="name flex">
+<span>def <span class="ident">start_preprocessing</span></span>(<span>self, jobs: int = 6) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Performs perprocessing on a list of pipelines.</p>
+<p>Pipelines are created by the list of BIDS paths in the BIDS root directory</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def start_preprocessing(self, jobs: int = 6) -&gt; list[Pipeline]:
+    &#34;&#34;&#34;
+    Performs perprocessing on a list of pipelines.
+    
+    Pipelines are created by the list of BIDS paths in the BIDS root directory
+    &#34;&#34;&#34;
+
+    pipelines = self.pipelines
+
+    with Pool(jobs) as p:
+        pipelines = list(
+            tqdm(p.imap(self._start_preprocessing, pipelines),
+                 total=len(self.subjects)))
+
+    return pipelines</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.pipeline.P3"><code class="flex name class">
+<span>class <span class="ident">P3</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class for P3 tasks</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class P3:
+    &#34;&#34;&#34;Helper class for P3 tasks&#34;&#34;&#34;
+
+    @abstractmethod
+    def EVENTS_MAPINGS() -&gt; Tuple[dict, list[int], list[int]]:
+        blocks = np.array(
+            [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
+        rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))
+                        ]).tolist()
+        freq = np.setdiff1d(blocks.flatten(), rare).tolist()
+
+        stimlus = [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39;]
+
+        evts_stim = [
+            &#39;stimulus/&#39; + stimlus[i] + &#39;/rare/&#39; +
+            str(alph) if alph in rare else &#39;stimulus/&#39; + stimlus[i] + &#39;/freq/&#39; +
+            str(alph) for i, x in enumerate(blocks) for alph in x
+        ]
+        evts_id = dict((i + 3, evts_stim[i]) for i in range(0, len(evts_stim)))
+        evts_id[1] = &#39;response/correct/201&#39;
+        evts_id[2] = &#39;response/error/202&#39;
+        return evts_id, rare, freq</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="src.pipeline.P3.EVENTS_MAPINGS"><code class="name flex">
+<span>def <span class="ident">EVENTS_MAPINGS</span></span>(<span>) ‑> Tuple[dict, list[int], list[int]]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def EVENTS_MAPINGS() -&gt; Tuple[dict, list[int], list[int]]:
+    blocks = np.array(
+        [list(range(10 * x + 1, 10 * x + 6)) for x in range(1, 6)])
+    rare = np.array([x + i for i, x in enumerate(range(11, 56, 10))
+                    ]).tolist()
+    freq = np.setdiff1d(blocks.flatten(), rare).tolist()
+
+    stimlus = [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;, &#39;E&#39;]
+
+    evts_stim = [
+        &#39;stimulus/&#39; + stimlus[i] + &#39;/rare/&#39; +
+        str(alph) if alph in rare else &#39;stimulus/&#39; + stimlus[i] + &#39;/freq/&#39; +
+        str(alph) for i, x in enumerate(blocks) for alph in x
+    ]
+    evts_id = dict((i + 3, evts_stim[i]) for i in range(0, len(evts_stim)))
+    evts_id[1] = &#39;response/correct/201&#39;
+    evts_id[2] = &#39;response/error/202&#39;
+    return evts_id, rare, freq</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="src.pipeline.Pipeline"><code class="flex name class">
+<span>class <span class="ident">Pipeline</span></span>
+<span>(</span><span>bids_path: Union[str, list[str]], subject: Optional[int] = None, events_mapping: <a title="src.pipeline.P3" href="#src.pipeline.P3">P3</a> = ({3: 'stimulus/A/rare/11', 4: 'stimulus/A/freq/12', 5: 'stimulus/A/freq/13', 6: 'stimulus/A/freq/14', 7: 'stimulus/A/freq/15', 8: 'stimulus/B/freq/21', 9: 'stimulus/B/rare/22', 10: 'stimulus/B/freq/23', 11: 'stimulus/B/freq/24', 12: 'stimulus/B/freq/25', 13: 'stimulus/C/freq/31', 14: 'stimulus/C/freq/32', 15: 'stimulus/C/rare/33', 16: 'stimulus/C/freq/34', 17: 'stimulus/C/freq/35', 18: 'stimulus/D/freq/41', 19: 'stimulus/D/freq/42', 20: 'stimulus/D/freq/43', 21: 'stimulus/D/rare/44', 22: 'stimulus/D/freq/45', 23: 'stimulus/E/freq/51', 24: 'stimulus/E/freq/52', 25: 'stimulus/E/freq/53', 26: 'stimulus/E/freq/54', 27: 'stimulus/E/rare/55', 1: 'response/correct/201', 2: 'response/error/202'}, [11, 22, 33, 44, 55], [12, 13, 14, 15, 21, 23, 24, 25, 31, 32, 34, 35, 41, 42, 43, 45, 51, 52, 53, 54]), verbose: <module 'logging' from 'C:\\Users\\sktsa\\miniconda3\\envs\\eeg-pipeline\\lib\\logging\\__init__.py'> = 20)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Pipeline for processing Encoding and Decoding Analysis on EEG data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Pipeline:
+    &#34;&#34;&#34; Pipeline for processing Encoding and Decoding Analysis on EEG data&#34;&#34;&#34;
+    bids_path: Union[str, list[str]]
+    subject: Optional[int] = None
+    events_mapping: P3 = P3.EVENTS_MAPINGS()
+    verbose: logging = logging.INFO
+    raw: mne.io.Raw = field(init=False, repr=False)
+    events: np.ndarray = field(init=False, repr=False)
+    event_ids: dict = field(init=False, repr=False)
+    decoding_score: Tuple = field(init=False, repr=False, default=None)
+
+    def __post_init__(self):
+        logging.basicConfig(level=self.verbose)
+        mne.set_log_level(verbose=&#39;ERROR&#39;)
+        warnings.filterwarnings(&#34;ignore&#34;)
+
+    def __str__(self) -&gt; str:
+        info = (
+            &#39;The raw data for subject {} has {} time samples and {} channels.\n&#39;
+            .format(self.subject, self.raw.n_times, len(self.raw.ch_names)) +
+            &#39;The last time sample is at {} seconds.&#39;.format(self.raw.times[-1])
+            + &#39;The first few channel names are {}....\n&#39;.format(&#39;, &#39;.join(
+                self.raw.ch_names[:5])) +
+            &#39;sample rate: {} Hz.\n&#39;.format(self.raw.info[&#39;sfreq&#39;]) +
+            &#39;%s channels x %s samples\n\n&#39; %
+            (len(self.raw), len(self.raw.times)))
+        return info
+
+    def set_montage(self) -&gt; None:
+        &#34;&#34;&#34;Set the montage for EEG data&#34;&#34;&#34;
+        montage_dir = os.path.join(os.path.dirname(mne.__file__), &#39;channels&#39;,
+                                   &#39;data&#39;, &#39;montages&#39;)
+        logging.debug(sorted(os.listdir(montage_dir)))
+        ten_twenty_montage = mne.channels.make_standard_montage(&#39;standard_1020&#39;)
+        self.raw.set_channel_types({
+            &#39;HEOG_left&#39;: &#39;eog&#39;,
+            &#39;HEOG_right&#39;: &#39;eog&#39;,
+            &#39;VEOG_lower&#39;: &#39;eog&#39;
+        })
+        self.raw.set_montage(ten_twenty_montage, match_case=False)
+        logging.info(&#34;Standard 1020 montage and EOG channels are set&#34;)
+
+    def load_data(self, event_id: Union[Dict, str] = &#34;auto&#34;) -&gt; any:
+        &#34;&#34;&#34;Load the mne raw data and find events and event ids from annotations&#34;&#34;&#34;
+        logging.info(&#34;Loading Data&#34;)
+        raw = read_raw_bids(bids_path=self.bids_path)
+        self.subject = self.bids_path.subject
+        self.events, self.event_ids = mne.events_from_annotations(
+            raw, event_id=event_id)
+        self.raw = raw.load_data()
+        return self
+
+    def set_custom_events_mapping(self,
+                                  mapping: Dict[int, str] = None,
+                                  task: str = None) -&gt; None:
+        &#34;&#34;&#34;Custom mappings for the P3 task&#34;&#34;&#34;
+        if task == &#39;P3&#39;:
+            mapping, _, _ = P3.EVENTS_MAPINGS()
+        assert mapping is not None, &#34;Mapping is not defined! Please pass mapping as argument&#34;
+
+        annot_from_events = mne.annotations_from_events(
+            events=self.events,
+            event_desc=mapping,
+            sfreq=self.raw.info[&#39;sfreq&#39;])
+        self.raw.set_annotations(annot_from_events)
+        self.events, self.event_ids = mne.events_from_annotations(self.raw)
+
+    def apply_resampling(self,
+                         sampling_freq: int,
+                         padding: str = &#39;auto&#39;) -&gt; None:
+        &#34;&#34;&#34;Apply resampling on the mne raw data&#34;&#34;&#34;
+        logging.info(&#34;Applying resampling&#34;)
+        self.raw, self.events = self.raw.resample(sampling_freq,
+                                                  npad=padding,
+                                                  events=self.events)
+
+    def apply_rereferencing(self, reference_channels: Union[List[str],
+                                                            str]) -&gt; None:
+        &#34;&#34;&#34;Apply re-referencing on the channels present in mne raw object&#34;&#34;&#34;
+        logging.info(&#34;Applying re-referencing&#34;)
+        mne.io.set_eeg_reference(self.raw, ref_channels=reference_channels)
+
+    def apply_cleaning(self, cleaner: CleaningData):
+        &#34;&#34;&#34;Apply cleaning of bad segments and bad channels&#34;&#34;&#34;
+        logging.info(&#34;Applying cleaning&#34;)
+        cleaner.apply_cleaning(self.raw)
+
+    def apply_filter(self, filter: BaseFilter) -&gt; None:
+        &#34;&#34;&#34;Apply filtering on raw data&#34;&#34;&#34;
+        logging.info(&#34;Applying filtering&#34;)
+        filter.apply_filter(self.raw)
+
+    def apply_ica(self, ica: BaseICA) -&gt; None:
+        &#34;&#34;&#34;Apply ICA on the raw data&#34;&#34;&#34;
+        logging.info(&#34;Applying ICA&#34;)
+        ica.compute_ica(self.raw)
+        ica.apply_ica(self.raw)
+
+    def get_events_df(self, events_ext: str = &#39;events.tsv&#39;) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Returns Pandas dataframe containing the events from the BIDS path&#34;&#34;&#34;
+        bids_path = self.bids_path
+        fname = os.path.join(
+            bids_path.directory,
+            bids_path.basename.removesuffix(bids_path.suffix) + events_ext)
+        assert isfile(fname), &#34;Events file not found!&#34;
+        return pd.read_csv(fname, delimiter=&#39;\t&#39;)
+
+    def compute_epochs(self, erp: any) -&gt; mne.Epochs:
+        &#34;&#34;&#34;Perform ERP epochs computation task&#34;&#34;&#34;
+        return erp.compute_epochs(self.raw, self.events, self.event_ids)
+
+    def compute_erp_peak(self,
+                         erp: any,
+                         condition: str,
+                         thypo: float,
+                         offset: float = 0.05,
+                         channels: list[str] = []) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Perform ERP Peak computation task&#34;&#34;&#34;
+        self.compute_epochs(erp)
+        return erp.compute_peak(condition, thypo, offset, channels)
+
+    def apply_decoder(self, decoder: EEGDecoder) -&gt; Tuple:
+        &#34;&#34;&#34;Perfrom Decoding Analysis&#34;&#34;&#34;
+        svm_scores = decoder.run_svm_()
+        # sliding_scores = decoder.run_sliding_() somehow doesnot work!
+        decoding_score = svm_scores
+        self.decoding_score = decoding_score
+        return decoding_score
+
+    def _parallel_process_raws(self, pipeline) -&gt; mne.io.Raw:
+        &#34;&#34;&#34;Perform preprocessig steps on list of raws using multiprocessing&#34;&#34;&#34;
+        pipeline.load_data()
+        pipeline.set_montage()
+        pipeline.make_pipeline([
+            SimpleMNEFilter(0.1, 50, &#39;firwin&#39;),
+            CleaningData(pipeline.bids_path),
+            PrecomputedICA(pipeline.bids_path)
+        ])
+        pipeline.set_custom_events_mapping(task=&#39;P3&#39;)
+        return pipeline.raw
+
+    def load_multiple_subjects(self,
+                               n_subjects: int = 40,
+                               preload: bool = False) -&gt; None:
+        &#34;&#34;&#34;Load subjects into current mne raw object&#34;&#34;&#34;
+
+        curr_sub = [int(self.bids_path.subject)]
+        subjects = set(range(1, n_subjects + 1)) - set(curr_sub)
+        bids_paths = [
+            self.bids_path.copy().update(subject=str(x).zfill(3))
+            for x in subjects
+        ]
+        pipelines = [
+            Pipeline(bids_path=path, verbose=logging.ERROR)
+            for path in bids_paths
+        ]
+        with Pool(6) as p:
+            raws = list(
+                tqdm(p.imap(self._parallel_process_raws, pipelines),
+                     total=n_subjects - 1))
+
+        raws.append(self.raw)
+        self.raw = mne.concatenate_raws(raws)
+        self.events, self.event_ids = mne.events_from_annotations(self.raw)
+        if preload:
+            self.raw.load_data()
+        self.set_montage()
+
+    def apply(self, step: list) -&gt; None:
+        &#34;&#34;&#34;Find the step to apply&#34;&#34;&#34;
+        if isinstance(step, tuple):
+            step_name = step[0]
+            step = step[1]
+        else:
+            step_name = step.step()
+        if step_name == &#39;cleaning&#39;:
+            self.apply_cleaning(step)
+        elif step_name == &#39;filtering&#39;:
+            self.apply_filter(step)
+        elif step_name == &#39;ica&#39;:
+            self.apply_ica(step)
+        elif step_name == &#39;erp&#39;:
+            self.compute_epochs(step)
+        elif step_name == &#39;decoding&#39;:
+            self.apply_decoder(step)
+        elif step_name == &#39;classifier&#39;:
+            self.apply_classifier(step)
+        elif step_name == &#39;reference&#39;:
+            self.apply_rereferencing(step)
+        elif step_name == &#39;resample&#39;:
+            self.apply_resampling(step)
+        else:
+            logging.error(&#34;Invalid pipeline operation!&#34;)
+
+    def make_pipeline(self, steps: list) -&gt; None:
+        &#34;&#34;&#34;Perform the list of steps on the current mne raw object&#34;&#34;&#34;
+        logging.info(
+            &#34;*&#34; * 5 +
+            &#34;Proceesing for subject: {}&#34;.format(self.bids_path.subject) +
+            &#34;*&#34; * 5)
+        for step in steps:
+            self.apply(step)
+        logging.info(&#34;Processed subject {}\n&#34;.format(self.bids_path.subject))</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="src.pipeline.Pipeline.bids_path"><code class="name">var <span class="ident">bids_path</span> : Union[str, list[str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.decoding_score"><code class="name">var <span class="ident">decoding_score</span> : Tuple</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.event_ids"><code class="name">var <span class="ident">event_ids</span> : dict</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.events"><code class="name">var <span class="ident">events</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.events_mapping"><code class="name">var <span class="ident">events_mapping</span> : <a title="src.pipeline.P3" href="#src.pipeline.P3">P3</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.raw"><code class="name">var <span class="ident">raw</span> : mne.io.fiff.raw.Raw</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.subject"><code class="name">var <span class="ident">subject</span> : Optional[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="src.pipeline.Pipeline.verbose"><code class="name">var <span class="ident">verbose</span> : <module 'logging' from 'C:\\Users\\sktsa\\miniconda3\\envs\\eeg-pipeline\\lib\\logging\\__init__.py'></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="src.pipeline.Pipeline.apply"><code class="name flex">
+<span>def <span class="ident">apply</span></span>(<span>self, step: list) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find the step to apply</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply(self, step: list) -&gt; None:
+    &#34;&#34;&#34;Find the step to apply&#34;&#34;&#34;
+    if isinstance(step, tuple):
+        step_name = step[0]
+        step = step[1]
+    else:
+        step_name = step.step()
+    if step_name == &#39;cleaning&#39;:
+        self.apply_cleaning(step)
+    elif step_name == &#39;filtering&#39;:
+        self.apply_filter(step)
+    elif step_name == &#39;ica&#39;:
+        self.apply_ica(step)
+    elif step_name == &#39;erp&#39;:
+        self.compute_epochs(step)
+    elif step_name == &#39;decoding&#39;:
+        self.apply_decoder(step)
+    elif step_name == &#39;classifier&#39;:
+        self.apply_classifier(step)
+    elif step_name == &#39;reference&#39;:
+        self.apply_rereferencing(step)
+    elif step_name == &#39;resample&#39;:
+        self.apply_resampling(step)
+    else:
+        logging.error(&#34;Invalid pipeline operation!&#34;)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.apply_cleaning"><code class="name flex">
+<span>def <span class="ident">apply_cleaning</span></span>(<span>self, cleaner: preprocessing.CleaningData)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply cleaning of bad segments and bad channels</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_cleaning(self, cleaner: CleaningData):
+    &#34;&#34;&#34;Apply cleaning of bad segments and bad channels&#34;&#34;&#34;
+    logging.info(&#34;Applying cleaning&#34;)
+    cleaner.apply_cleaning(self.raw)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.apply_decoder"><code class="name flex">
+<span>def <span class="ident">apply_decoder</span></span>(<span>self, decoder: decoding_analysis.EEGDecoder) ‑> Tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perfrom Decoding Analysis</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_decoder(self, decoder: EEGDecoder) -&gt; Tuple:
+    &#34;&#34;&#34;Perfrom Decoding Analysis&#34;&#34;&#34;
+    svm_scores = decoder.run_svm_()
+    # sliding_scores = decoder.run_sliding_() somehow doesnot work!
+    decoding_score = svm_scores
+    self.decoding_score = decoding_score
+    return decoding_score</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.apply_filter"><code class="name flex">
+<span>def <span class="ident">apply_filter</span></span>(<span>self, filter: preprocessing.BaseFilter) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply filtering on raw data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_filter(self, filter: BaseFilter) -&gt; None:
+    &#34;&#34;&#34;Apply filtering on raw data&#34;&#34;&#34;
+    logging.info(&#34;Applying filtering&#34;)
+    filter.apply_filter(self.raw)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.apply_ica"><code class="name flex">
+<span>def <span class="ident">apply_ica</span></span>(<span>self, ica: preprocessing.BaseICA) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply ICA on the raw data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_ica(self, ica: BaseICA) -&gt; None:
+    &#34;&#34;&#34;Apply ICA on the raw data&#34;&#34;&#34;
+    logging.info(&#34;Applying ICA&#34;)
+    ica.compute_ica(self.raw)
+    ica.apply_ica(self.raw)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.apply_rereferencing"><code class="name flex">
+<span>def <span class="ident">apply_rereferencing</span></span>(<span>self, reference_channels: Union[str, List[str]]) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply re-referencing on the channels present in mne raw object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_rereferencing(self, reference_channels: Union[List[str],
+                                                        str]) -&gt; None:
+    &#34;&#34;&#34;Apply re-referencing on the channels present in mne raw object&#34;&#34;&#34;
+    logging.info(&#34;Applying re-referencing&#34;)
+    mne.io.set_eeg_reference(self.raw, ref_channels=reference_channels)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.apply_resampling"><code class="name flex">
+<span>def <span class="ident">apply_resampling</span></span>(<span>self, sampling_freq: int, padding: str = 'auto') ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Apply resampling on the mne raw data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_resampling(self,
+                     sampling_freq: int,
+                     padding: str = &#39;auto&#39;) -&gt; None:
+    &#34;&#34;&#34;Apply resampling on the mne raw data&#34;&#34;&#34;
+    logging.info(&#34;Applying resampling&#34;)
+    self.raw, self.events = self.raw.resample(sampling_freq,
+                                              npad=padding,
+                                              events=self.events)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.compute_epochs"><code class="name flex">
+<span>def <span class="ident">compute_epochs</span></span>(<span>self, erp: <built-in function any>) ‑> mne.epochs.Epochs</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform ERP epochs computation task</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_epochs(self, erp: any) -&gt; mne.Epochs:
+    &#34;&#34;&#34;Perform ERP epochs computation task&#34;&#34;&#34;
+    return erp.compute_epochs(self.raw, self.events, self.event_ids)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.compute_erp_peak"><code class="name flex">
+<span>def <span class="ident">compute_erp_peak</span></span>(<span>self, erp: <built-in function any>, condition: str, thypo: float, offset: float = 0.05, channels: list = []) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform ERP Peak computation task</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_erp_peak(self,
+                     erp: any,
+                     condition: str,
+                     thypo: float,
+                     offset: float = 0.05,
+                     channels: list[str] = []) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Perform ERP Peak computation task&#34;&#34;&#34;
+    self.compute_epochs(erp)
+    return erp.compute_peak(condition, thypo, offset, channels)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.get_events_df"><code class="name flex">
+<span>def <span class="ident">get_events_df</span></span>(<span>self, events_ext: str = 'events.tsv') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns Pandas dataframe containing the events from the BIDS path</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_events_df(self, events_ext: str = &#39;events.tsv&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Returns Pandas dataframe containing the events from the BIDS path&#34;&#34;&#34;
+    bids_path = self.bids_path
+    fname = os.path.join(
+        bids_path.directory,
+        bids_path.basename.removesuffix(bids_path.suffix) + events_ext)
+    assert isfile(fname), &#34;Events file not found!&#34;
+    return pd.read_csv(fname, delimiter=&#39;\t&#39;)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.load_data"><code class="name flex">
+<span>def <span class="ident">load_data</span></span>(<span>self, event_id: Union[Dict, str] = 'auto') ‑> <built-in function any></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load the mne raw data and find events and event ids from annotations</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_data(self, event_id: Union[Dict, str] = &#34;auto&#34;) -&gt; any:
+    &#34;&#34;&#34;Load the mne raw data and find events and event ids from annotations&#34;&#34;&#34;
+    logging.info(&#34;Loading Data&#34;)
+    raw = read_raw_bids(bids_path=self.bids_path)
+    self.subject = self.bids_path.subject
+    self.events, self.event_ids = mne.events_from_annotations(
+        raw, event_id=event_id)
+    self.raw = raw.load_data()
+    return self</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.load_multiple_subjects"><code class="name flex">
+<span>def <span class="ident">load_multiple_subjects</span></span>(<span>self, n_subjects: int = 40, preload: bool = False) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load subjects into current mne raw object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_multiple_subjects(self,
+                           n_subjects: int = 40,
+                           preload: bool = False) -&gt; None:
+    &#34;&#34;&#34;Load subjects into current mne raw object&#34;&#34;&#34;
+
+    curr_sub = [int(self.bids_path.subject)]
+    subjects = set(range(1, n_subjects + 1)) - set(curr_sub)
+    bids_paths = [
+        self.bids_path.copy().update(subject=str(x).zfill(3))
+        for x in subjects
+    ]
+    pipelines = [
+        Pipeline(bids_path=path, verbose=logging.ERROR)
+        for path in bids_paths
+    ]
+    with Pool(6) as p:
+        raws = list(
+            tqdm(p.imap(self._parallel_process_raws, pipelines),
+                 total=n_subjects - 1))
+
+    raws.append(self.raw)
+    self.raw = mne.concatenate_raws(raws)
+    self.events, self.event_ids = mne.events_from_annotations(self.raw)
+    if preload:
+        self.raw.load_data()
+    self.set_montage()</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.make_pipeline"><code class="name flex">
+<span>def <span class="ident">make_pipeline</span></span>(<span>self, steps: list) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform the list of steps on the current mne raw object</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def make_pipeline(self, steps: list) -&gt; None:
+    &#34;&#34;&#34;Perform the list of steps on the current mne raw object&#34;&#34;&#34;
+    logging.info(
+        &#34;*&#34; * 5 +
+        &#34;Proceesing for subject: {}&#34;.format(self.bids_path.subject) +
+        &#34;*&#34; * 5)
+    for step in steps:
+        self.apply(step)
+    logging.info(&#34;Processed subject {}\n&#34;.format(self.bids_path.subject))</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.set_custom_events_mapping"><code class="name flex">
+<span>def <span class="ident">set_custom_events_mapping</span></span>(<span>self, mapping: Dict[int, str] = None, task: str = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Custom mappings for the P3 task</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_custom_events_mapping(self,
+                              mapping: Dict[int, str] = None,
+                              task: str = None) -&gt; None:
+    &#34;&#34;&#34;Custom mappings for the P3 task&#34;&#34;&#34;
+    if task == &#39;P3&#39;:
+        mapping, _, _ = P3.EVENTS_MAPINGS()
+    assert mapping is not None, &#34;Mapping is not defined! Please pass mapping as argument&#34;
+
+    annot_from_events = mne.annotations_from_events(
+        events=self.events,
+        event_desc=mapping,
+        sfreq=self.raw.info[&#39;sfreq&#39;])
+    self.raw.set_annotations(annot_from_events)
+    self.events, self.event_ids = mne.events_from_annotations(self.raw)</code></pre>
+</details>
+</dd>
+<dt id="src.pipeline.Pipeline.set_montage"><code class="name flex">
+<span>def <span class="ident">set_montage</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the montage for EEG data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_montage(self) -&gt; None:
+    &#34;&#34;&#34;Set the montage for EEG data&#34;&#34;&#34;
+    montage_dir = os.path.join(os.path.dirname(mne.__file__), &#39;channels&#39;,
+                               &#39;data&#39;, &#39;montages&#39;)
+    logging.debug(sorted(os.listdir(montage_dir)))
+    ten_twenty_montage = mne.channels.make_standard_montage(&#39;standard_1020&#39;)
+    self.raw.set_channel_types({
+        &#39;HEOG_left&#39;: &#39;eog&#39;,
+        &#39;HEOG_right&#39;: &#39;eog&#39;,
+        &#39;VEOG_lower&#39;: &#39;eog&#39;
+    })
+    self.raw.set_montage(ten_twenty_montage, match_case=False)
+    logging.info(&#34;Standard 1020 montage and EOG channels are set&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src" href="index.html">src</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="src.pipeline.MultiPipeline" href="#src.pipeline.MultiPipeline">MultiPipeline</a></code></h4>
+<ul class="">
+<li><code><a title="src.pipeline.MultiPipeline.bids_paths" href="#src.pipeline.MultiPipeline.bids_paths">bids_paths</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.bids_root" href="#src.pipeline.MultiPipeline.bids_root">bids_root</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.pipelines" href="#src.pipeline.MultiPipeline.pipelines">pipelines</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.start_encoding_analysis" href="#src.pipeline.MultiPipeline.start_encoding_analysis">start_encoding_analysis</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.start_erp_analysis" href="#src.pipeline.MultiPipeline.start_erp_analysis">start_erp_analysis</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.start_preprocessing" href="#src.pipeline.MultiPipeline.start_preprocessing">start_preprocessing</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.subjects" href="#src.pipeline.MultiPipeline.subjects">subjects</a></code></li>
+<li><code><a title="src.pipeline.MultiPipeline.verbose" href="#src.pipeline.MultiPipeline.verbose">verbose</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.pipeline.P3" href="#src.pipeline.P3">P3</a></code></h4>
+<ul class="">
+<li><code><a title="src.pipeline.P3.EVENTS_MAPINGS" href="#src.pipeline.P3.EVENTS_MAPINGS">EVENTS_MAPINGS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="src.pipeline.Pipeline" href="#src.pipeline.Pipeline">Pipeline</a></code></h4>
+<ul class="">
+<li><code><a title="src.pipeline.Pipeline.apply" href="#src.pipeline.Pipeline.apply">apply</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.apply_cleaning" href="#src.pipeline.Pipeline.apply_cleaning">apply_cleaning</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.apply_decoder" href="#src.pipeline.Pipeline.apply_decoder">apply_decoder</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.apply_filter" href="#src.pipeline.Pipeline.apply_filter">apply_filter</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.apply_ica" href="#src.pipeline.Pipeline.apply_ica">apply_ica</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.apply_rereferencing" href="#src.pipeline.Pipeline.apply_rereferencing">apply_rereferencing</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.apply_resampling" href="#src.pipeline.Pipeline.apply_resampling">apply_resampling</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.bids_path" href="#src.pipeline.Pipeline.bids_path">bids_path</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.compute_epochs" href="#src.pipeline.Pipeline.compute_epochs">compute_epochs</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.compute_erp_peak" href="#src.pipeline.Pipeline.compute_erp_peak">compute_erp_peak</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.decoding_score" href="#src.pipeline.Pipeline.decoding_score">decoding_score</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.event_ids" href="#src.pipeline.Pipeline.event_ids">event_ids</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.events" href="#src.pipeline.Pipeline.events">events</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.events_mapping" href="#src.pipeline.Pipeline.events_mapping">events_mapping</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.get_events_df" href="#src.pipeline.Pipeline.get_events_df">get_events_df</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.load_data" href="#src.pipeline.Pipeline.load_data">load_data</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.load_multiple_subjects" href="#src.pipeline.Pipeline.load_multiple_subjects">load_multiple_subjects</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.make_pipeline" href="#src.pipeline.Pipeline.make_pipeline">make_pipeline</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.raw" href="#src.pipeline.Pipeline.raw">raw</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.set_custom_events_mapping" href="#src.pipeline.Pipeline.set_custom_events_mapping">set_custom_events_mapping</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.set_montage" href="#src.pipeline.Pipeline.set_montage">set_montage</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.subject" href="#src.pipeline.Pipeline.subject">subject</a></code></li>
+<li><code><a title="src.pipeline.Pipeline.verbose" href="#src.pipeline.Pipeline.verbose">verbose</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
