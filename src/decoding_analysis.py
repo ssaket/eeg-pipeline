@@ -156,6 +156,7 @@ class EEGDecoder():
     reject: Union[dict, None] = None
     epochs: mne.Epochs = field(init=False, repr=False)
     score: np.ndarray = field(init=False, repr=False)
+    equalize_ids: list[str] = field(default_factory=list)
 
     def __post_init__(self):
         events, ids = mne.events_from_annotations(self.raw)
@@ -166,9 +167,13 @@ class EEGDecoder():
                             self.epoch_times[1],
                             self.baseline,
                             reject_by_annotation=self.reject_by_annotation,
-                            reject=self.reject)
+                            reject=self.reject,
+                            picks=['eeg'])
         if self.equalize_events:
-            epochs.equalize_event_counts(ids)
+            if len(self.equalize_ids) > 0:
+                epochs.equalize_event_counts(self.equalize_ids)
+            else:
+                epochs.equalize_event_counts(ids)
         self.epochs = epochs[self.condition].load_data().crop(
             self.decoding_times[0], self.decoding_times[1])
 
@@ -302,7 +307,7 @@ class EEGDecoder():
         labels = np.where(np.isin(_labels, rare_stims), 1, 2)
         return labels
 
-    def run_svm_(self):
+    def run_svm_(self) -> Tuple[object, object]:
         """Runs inside a seperate process using multiprocessing"""
         from mne.decoding.transformer import Vectorizer
         from sklearn.preprocessing import StandardScaler
@@ -325,7 +330,7 @@ class EEGDecoder():
         logging.info('Best Score: {}'.format(gs_cv_svm.best_score_))
         return gs_cv_svm.best_score_, gs_cv_svm.best_params_
 
-    def run_sliding_(self):
+    def run_sliding_(self) -> Tuple[np.ndarray, np.ndarray]:
         """Runs inside a seperate process using multiprocessing"""
         from mne.decoding.search_light import SlidingEstimator
         from mne.decoding.transformer import Vectorizer
