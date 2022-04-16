@@ -2,7 +2,7 @@
 
 An EEG pipeline for encoding and decoding analysis built using MNE python. The pipeline design is highly influenced by [`sklearn.pipeline.Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn-pipeline-pipeline). The steps are passed as a list.
 
-In this repository, we use the pipeline to perform cleaning, ICA, ERP peak calculation, Mass Univariate analysis and Decoding Analysis on subjects from [ERPcore](https://erpinfo.org/erp-core) [1]() for the P300 task.
+In this repository, we use the pipeline to perform cleaning, ICA, ERP peak calculation, Mass Univariate analysis and Decoding Analysis on subjects from ERPcore [[1](#references)] for the P300 task.
 
 ## Getting started
 
@@ -78,9 +78,10 @@ Notebooks below have been move to repo: [eeg-analysis-notebooks](https://github.
 ```
 
 ## TODOs
-[ ] Replace list comprehension with generators
-[ ] Add Decoder based on Deep-learing
-[ ] Do performance testing 
+
+- [ ] Replace list comprehension with generators
+- [ ] Add Decoder based on Deep-learing
+- [ ] Do performance testing
 
 ## References
 
