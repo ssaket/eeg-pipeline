@@ -2,9 +2,9 @@
 
 An EEG pipeline for encoding and decoding analysis built using MNE python. The pipeline design is highly influenced by [`sklearn.pipeline.Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn-pipeline-pipeline). The steps are passed as a list.
 
-In this repository, we use the pipeline to perform cleaning, ICA, ERP peak calculation, Mass Univariate analysis and Decoding Analysis on subjects from [ERPcore](https://erpinfo.org/erp-core)[1] for the P300 task.
+In this repository, we use the pipeline to perform cleaning, ICA, ERP peak calculation, Mass Univariate analysis and Decoding Analysis on subjects from [ERPcore][https://erpinfo.org/erp-core](1) for the P300 task.
 
-Example
+Quick Example
 
 ```python
 bids_root = os.path.join('data', 'P3')
@@ -22,6 +22,8 @@ pipeline.make_pipeline([
         PrecomputedICA(self.bids_path)
 ])
 ```
+
+[![hello](https://img.shields.io/static/v1?label=Documentation&message=dev&color=yellowgreen)](https://ssaket.github.io/eeg-pipeline/)
 
 ## Setup
 
@@ -43,6 +45,8 @@ Use the environment.yml file to create a virtual env and install [mne-bids](http
 - `test_pipeline.py`: It is a test class for `pipeline.py` and can be used for testing processing steps as well.
 
 ## Notebooks
+
+Notebooks below have been move to repo: [eeg-analysis-notebooks](https://github.com/ssaket/eeg-analysis-notebooks)
 
 - `preprocessing.ipynb`: We discuss how to perform preprocessing steps like applying filters, removing bad channels, annotating bad segments from EEG data. We also discuss on performing ICA like picking up and removing bad ICA components.
 
