@@ -1,6 +1,6 @@
 # EEG Pipeline
 
-An EEG pipeline for encoding and decoding analysis built using MNE python. The pipeline design is highly influenced by [`sklearn.pipeline.Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn-pipeline-pipeline). The steps are passed as a list.
+An EEG pipeline for encoding and decoding analysis built using MNE python. The pipeline design is highly influenced by [`sklearn.pipeline.Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html#sklearn-pipeline-pipeline) and processing steps are passed as a list.
 
 In this repository, we use the pipeline to perform cleaning, ICA, ERP peak calculation, Mass Univariate analysis and Decoding Analysis on subjects from ERPcore [[1](#references)] for the P300 task.
 
@@ -16,7 +16,7 @@ bids_path = BIDSPath(subject='001',
                             datatype='eeg',
                             suffix='eeg',
                             root=bids_root)
-pipeline = Pipeline(self.bids_path, verbose=logging.ERROR)
+pipeline = Pipeline(bids_path, verbose=logging.ERROR)
 pipeline.load_data()
 pipeline.make_pipeline([
         SimpleMNEFilter(0.1, 50, 'firwin'),
@@ -39,24 +39,26 @@ Use the environment.yml file to create a virtual env and install [mne-bids](http
 
 ## Classes
 
-- `preprocessing.py`: It contains classes for preprocessing steps. You can create your own preprocessing class by extending the base class for than step.
-- `erpanalysis.py`: It is a class containing functions for performing ERP analysis.
-- `encoding_analysis.py`: It is a class containing functions for performing encoding analysis.
-- `decoding_analysis.py`: It is a class containing functions for performing decoding analysis.
-- `pipeline.py`: It is a class responsible for performing analysis steps. It further contains helper functions and classes.
-- `test_pipeline.py`: It is a test class for `pipeline.py` and can be used for testing processing steps as well.
+Note: The python files below provides basic structure. Once, I get some free time, I will refactor it. I would welcome and appritiate any pull requests.
+
+- `preprocessing.py`: It contains classes for preprocessing steps. You can create your own preprocessing class by extending the base class.
+- `erpanalysis.py`: It contains functions for performing ERP analysis.
+- `encoding_analysis.py`: It contains functions for performing encoding analysis.
+- `decoding_analysis.py`: It contains functions for performing decoding analysis.
+- `pipeline.py`: It is a class responsible for performing analysis steps or orchestration. It also has some other helper functions and classes.
+- `test_pipeline.py`: It is a test class for `pipeline.py` and can be used for testing processing steps.
 
 ## Notebooks
 
-Notebooks below have been move to repo: [eeg-analysis-notebooks](https://github.com/ssaket/eeg-analysis-notebooks)
+Notebooks below have been moved to repository: [eeg-analysis-notebooks](https://github.com/ssaket/eeg-analysis-notebooks)
 
-- `preprocessing.ipynb`: We discuss how to perform preprocessing steps like applying filters, removing bad channels, annotating bad segments from EEG data. We also discuss on performing ICA like picking up and removing bad ICA components.
+- `preprocessing.ipynb`: In this notebook, we will discuss about how to perform preprocessing steps like applying filters, removing bad channels, annotating bad segments from EEG data. We also discuss about performing ICA on EEG data for picking up and removing bad ICA components.
 
-- `erpanalysis.ipynb`: we disscuss on peak to peak amplitude, diffrence between conditions and stimulus/
+- `erpanalysis.ipynb`: In this notebook, we will disscuss peak to peak amplitude, difference between conditions and stimulus.
 
-- `encoding.ipynb`: we discuss and analyse how to fit a mass univariate model on EEG data.
+- `encoding.ipynb`: In this notebook, we will discuss and analyse how to fit a mass univariate model on EEG data.
 
-- `decoding.ipynb`: we disscuss and analyse classification scores based on Sensor-space decoding: decoding over time. We also discuss decoding in sensor space data.
+- `decoding.ipynb`: In this notebook, we will disscuss and analyse classification scores based on Sensor-space decoding: decoding over time and decoding in sensor space data. This is highly influenced by MNE tutorials
 
 ## Structure
 
@@ -79,9 +81,10 @@ Notebooks below have been move to repo: [eeg-analysis-notebooks](https://github.
 
 ## TODOs
 
+- [ ] Major refactoring - change variable names, organize code. See the issue#1
 - [ ] Replace list comprehension with generators
-- [ ] Add Decoder based on Deep-learing
-- [ ] Do performance testing
+- [ ] Add Decoder based on Deep learning
+- [ ] Performance testing / abalation studies
 
 ## References
 
